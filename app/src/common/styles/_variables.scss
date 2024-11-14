@@ -1,0 +1,43 @@
+// Background Colours
+$black-1: #0F0F0F;
+$black-2: #151515;
+$dark-grey-bg: #5F5F5F;
+$dark-grey-border: #4D4D4D;
+$misty-blue: #597f7f;
+$grey-gradient: linear-gradient(to right, #292929, #333333);
+
+// Foreground Colours
+$white: #FAFAFA;
+$dark-grey-text: #5F5F5F;
+
+// Font Weights
+$fw-bold: 700;
+$fw-semibold: 600;
+$fw-regular: 400;
+$fw-light: 300;
+$fw-extralight: 200;
+
+// Font Family
+$font-primary: "Roboto Mono", system-ui,
+    -apple-system,
+    Roboto,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    'Open Sans',
+    'Helvetica Neue',
+    sans-serif;
+
+$font-secondary: "Roboto", system-ui,
+    -apple-system,
+    Roboto,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    'Open Sans',
+    'Helvetica Neue',
+    sans-serif;

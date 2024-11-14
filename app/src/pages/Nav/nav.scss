@@ -1,0 +1,37 @@
+@use "../../common/styles/mixins" as *;
+@use "../../common/styles/variables" as *;
+
+.navbar__container {
+    padding: 1rem 1.25rem;
+    background-color: $black-2;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+}
+
+.navbar__brand {
+    h1 {
+        display: none;
+    }
+}
+
+@include tablet-768() {
+    .navbar__brand {
+            h1 {
+                display: block;
+                margin-left: 1rem;
+                color: $white;
+            }
+        }
+}
+
+.logo-text {
+    font-size: 1.25rem;
+}
+
+
+
+
+

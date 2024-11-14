@@ -1,0 +1,6 @@
+@use "./variables" as *;
+
+h1 {
+    font-family: $font-primary;
+    font-size: clamp(4rem, 5vw, 7.5rem);
+}

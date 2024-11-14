@@ -1,0 +1,8 @@
+{
+    "name": "Oli's Chess App",
+    "dockerComposeFile": [
+        "../docker-compose.yml"
+    ],
+    "service": "app",
+    "workspaceFolder": "/app"
+}
