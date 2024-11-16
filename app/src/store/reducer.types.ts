@@ -2,8 +2,10 @@ import { ActionTypes } from "./reducer.enums";
 
 export interface IInput {
   inputId: string;
+  inputLabel: string;
   inputValue: string;
   isInputValid?: boolean;
+  errorMessage: string;
 }
 
 export type StateTypes = {
@@ -12,6 +14,7 @@ export type StateTypes = {
 
 export type AppState = {
   loginInputs: IInput[];
+  signUpInputs: IInput[];
 };
 
 export interface AppAction {

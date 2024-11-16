@@ -10,4 +10,8 @@ export default defineConfig({
       include: "**/*.svg?react"
     })
   ],
+  server: {
+    host: "localhost",
+    port: 3000
+  }
 })
