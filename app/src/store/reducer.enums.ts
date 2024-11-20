@@ -1,5 +1,0 @@
-export enum ActionTypes {
-  FORM_INPUT = "FORM_INPUT",
-  SUBMIT_FORM = "SUBMIT_FORM",
-  INVALID_FORM = "INVALID_FORM"
-}
