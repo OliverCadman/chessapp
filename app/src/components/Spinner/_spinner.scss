@@ -1,0 +1,133 @@
+:root {
+    --hue: 223;
+    --bg: hsl(var(--hue), 90%, 90%);
+    --fg: hsl(var(--hue), 90%, 10%);
+    --primary: hsl(223deg 20.51% 43.4%);
+    --secondary: hsl(322.51deg 12.56% 58.06%);
+    --trans-dur: 0.3s;
+    --bezier: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.pl {
+    --dur: 3s;
+    --size: 2.5em;
+    --bar-width: calc(var(--size) * 0.25);
+    aspect-ratio: 1 / 1;
+    display: flex;
+    justify-content: space-between;
+    margin: auto;
+    width: var(--size);
+
+    &__bar {
+        background-color: var(--primary);
+        position: relative;
+        width: var(--bar-width);
+        height: 100%;
+        transform-style: preserve-3d;
+
+        &,
+        &:before,
+        &:after {
+            animation:
+                bar-color var(--dur) step-end infinite,
+                bar-spin var(--dur) var(--bezier) infinite;
+        }
+
+
+        @for $b from 2 through 3 {
+            &:nth-child(#{$b}) {
+
+                &,
+                &:before,
+                &:after {
+                    animation-delay: calc(var(--dur) * #{-1 + (0.04 * ($b - 1))});
+                }
+            }
+        }
+    }
+}
+
+/* Dark theme */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg: hsl(var(--hue), 90%, 10%);
+        --fg: hsl(var(--hue), 90%, 90%);
+    }
+}
+
+/* Animations */
+@keyframes bar-color {
+
+    from,
+    75%,
+    to {
+        background-color: var(--primary);
+    }
+
+    25%,
+    50% {
+        background-color: var(--secondary);
+    }
+}
+
+@keyframes bar-spin {
+    from {
+        transform: rotateX(0);
+    }
+
+    25% {
+        transform: rotateX(-0.25turn);
+    }
+
+    50% {
+        transform: rotateX(-0.5turn);
+    }
+
+    75% {
+        transform: rotateX(-0.75turn);
+    }
+
+    to {
+        transform: rotateX(-1turn);
+    }
+}
+
+@keyframes bar-end-1 {
+
+    from,
+    25%,
+    to {
+        background-color: var(--fg);
+        border-radius: 0;
+    }
+
+    50% {
+        background-color: var(--secondary);
+        border-radius: 50%;
+    }
+
+    75% {
+        background-color: var(--primary);
+        border-radius: 50%;
+    }
+}
+
+@keyframes bar-end-2 {
+
+    from,
+    to {
+        background-color: var(--primary);
+        border-radius: 0;
+    }
+
+    25% {
+        background-color: var(--secondary);
+        border-radius: 0;
+    }
+
+    50%,
+    75% {
+        background-color: var(--fg);
+        border-radius: 50%;
+    }
+}

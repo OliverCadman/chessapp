@@ -1,0 +1,6 @@
+@use "../../common/styles/variables" as *;
+
+.form__error {
+    margin-top: 0.5rem;
+    color: $danger;
+}

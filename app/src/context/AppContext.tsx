@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useReducer } from "react";
 import reducer from "../store/reducer";
-import { AppState } from "../store/reducer.types";
+import { AppState } from "../store/store.types";
 import { IAppContext } from "./context.types";
 
 const createInputLabel = (inputId: string) => {

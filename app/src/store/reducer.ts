@@ -1,5 +1,5 @@
 import { Reducer } from "react";
-import { AppAction, AppState } from "./reducer.types";
+import { AppAction, AppState } from "./store.types";
 
 const reducer: Reducer<AppState, AppAction> = (
   state: AppState,
@@ -14,9 +14,11 @@ const reducer: Reducer<AppState, AppAction> = (
         ...state,
         loginInputs: state.loginInputs.map((input) => {
             if (input.inputId === action.payload.id) {
+              const inputValid = input.inputValue;
               return {
                 ...input,
                 inputValue: action.payload.value
+                
               }
             } else return input
           })

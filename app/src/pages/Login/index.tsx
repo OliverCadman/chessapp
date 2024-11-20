@@ -1,55 +1,125 @@
-import React, {useRef, useCallback, useEffect} from "react";
+import React, { useEffect } from "react";
 import Form from "../../components/Form";
-import { useAppContext } from "../../context/AppContext";
+import { useLoginStore } from "../../store/auth";
+import { IInput } from "../../store/store.types";
+import { useQueryClient, useMutation } from "@tanstack/react-query";
+import { APIClient } from "../../api";
+import FullHeightContainer from "../../components/FullHeightContainer/FullHeightContainer";
 
 const Login = () => {
+  const apiClient = new APIClient();
+  const loginInputs = useLoginStore((state) => state.loginInputs);
+  const authenticationError = useLoginStore(
+    (state) => state.authenticationError,
+  );
 
-  const { appState, dispatch } = useAppContext();
+  const { mutate, isPending } = useMutation({
+    mutationFn: async (payload: { email: string; password: string }) => {
+      return apiClient.loginRequest(payload);
+    },
+
+    onSuccess: (data) => console.log("DATA"),
+    onError: (err) => {
+      console.log("ERROR!", err.message);
+      useLoginStore.setState((prevState) => {
+        return {
+          ...prevState,
+          authenticationError: err.message,
+        };
+      });
+    },
+  });
 
   const validateForm = () => {
-   const invalidIDs = [];
-   const inputs = appState.loginInputs;
-   for (let input of inputs) {
-      const {inputId, inputValue} = input;
+    const invalidIDs = [];
+
+    const inputs = loginInputs;
+    for (let input of inputs) {
+      const { inputId, inputValue } = input;
       if (!inputValue) {
-        const errorMsg = "This field cannot be blank."
+        const errorMsg = "This field cannot be blank.";
         invalidIDs.push({
           inputId,
-          errorMsg
-        })
+          errorMsg,
+        });
       }
-   }
-   return invalidIDs.length > 0 ? invalidIDs : false; 
-
-  }
+    }
+    return invalidIDs.length > 0 ? invalidIDs : false;
+  };
 
   const handleSubmit = (e: React.SyntheticEvent) => {
-        e.preventDefault(); 
+    e.preventDefault();
 
-        const invalidInputIDs = validateForm();
-        
-        if (invalidInputIDs) dispatch({
-          type: "INVALID_FORM",
-          payload: invalidInputIDs
-        })
+    const invalidInputIDs = validateForm();
 
-        else return;
-      
+    if (invalidInputIDs) {
+      useLoginStore.setState((state) => {
+        return {
+          ...state,
+          loginInputs: state.loginInputs.map((input: IInput) => {
+            if (
+              invalidInputIDs.map((x: any) => x.inputId).includes(input.inputId)
+            ) {
+              return {
+                ...input,
+                isInputValid: false,
+                errorMessage: invalidInputIDs.find(
+                  (x: any) => x.inputId === input.inputId,
+                )!.errorMsg,
+              };
+            } else return input;
+          }),
+        };
+      });
+    } else {
+      const [email, password] = loginInputs.map((input) => input.inputValue);
+      const payload = { email, password };
+
+      mutate(payload);
     }
+  };
 
   const handleChange = (e: React.FormEvent) => {
-    const inputEl = e.target as HTMLInputElement
+    const inputEl = e.target as HTMLInputElement;
 
-    const value = inputEl.value;
-    const id = inputEl.id;
+    const inputValue = inputEl.value;
+    const inputId = inputEl.id;
 
-    dispatch({
-      type: "FORM_INPUT",
-      payload: {id, value}
-    })
-  }
- 
-  return <Form handleChange={handleChange} inputs={appState.loginInputs} handleSubmit={handleSubmit} isSignUpForm={false}/>;
+    useLoginStore.setState((state) => {
+      const inputToUpdate = state.loginInputs.find(
+        (input: IInput) => input.inputId == inputId,
+      );
+      if (!inputToUpdate) return { ...state };
+
+      return {
+        ...state,
+        authenticationError: undefined,
+        loginInputs: state.loginInputs.map((input: IInput) => {
+          if (input.inputId === inputId) {
+            return {
+              ...input,
+              inputValue: inputValue,
+              isInputValid: true,
+              errorMessage: "",
+            };
+          } else return input;
+        }),
+      };
+    });
+  };
+
+  return (
+    <FullHeightContainer>
+      <Form
+        authenticationError={authenticationError}
+        pendingSubmissionResult={isPending}
+        handleChange={handleChange}
+        inputs={loginInputs}
+        handleSubmit={handleSubmit}
+        isSignUpForm={false}
+      />
+    </FullHeightContainer>
+  );
 };
 
 export default Login;

@@ -6,11 +6,12 @@
     border-radius: 5px;
     width: 100%;
     max-width: 300px;
+    min-height: 275px;
 }
 
 @include tablet-768() {
     .form__container {
-        max-width: 450px;
+        min-width: 450px;
     }
 }
 
@@ -24,8 +25,13 @@
 
     margin-bottom: 1.5rem;
 
+    &:nth-child(2) {
+        margin-bottom: 0;
+    }
+
     &:last-child {
         margin-top: 1.5rem;
+        min-height: 50px;
     }
 
     label,
@@ -49,5 +55,19 @@
         height: 2.5rem;
         padding: 1.275rem .5rem;
         width: 100%;
+
+        &:focus {
+            transition: all 0.1s ease;
+            border: 1px solid #ffadd9;
+        }
+
+        &.border-danger {
+            transition: all 0.2s ease;
+            border: 2px solid $danger;
+        }
     }
+}
+
+.form__input-error {
+    margin-top: .25rem;
 }
