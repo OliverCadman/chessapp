@@ -1,26 +1,43 @@
-import React, { useEffect } from "react";
+import React from "react";
+import FullHeightContainer from "../../components/FullHeightContainer/FullHeightContainer";
 import Form from "../../components/Form";
 import { useLoginStore } from "../../store/auth";
 import { IInput } from "../../store/store.types";
-import { useQueryClient, useMutation } from "@tanstack/react-query";
-import { APIClient } from "../../api";
-import FullHeightContainer from "../../components/FullHeightContainer/FullHeightContainer";
+import { useMutation } from "@tanstack/react-query";
+import { APIClient } from "../../api/client";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const apiClient = new APIClient();
+
   const loginInputs = useLoginStore((state) => state.loginInputs);
   const authenticationError = useLoginStore(
     (state) => state.authenticationError,
   );
+
+  const navigate = useNavigate();
 
   const { mutate, isPending } = useMutation({
     mutationFn: async (payload: { email: string; password: string }) => {
       return apiClient.loginRequest(payload);
     },
 
-    onSuccess: (data) => console.log("DATA"),
+    onSuccess: (data) => {
+      console.log("DATA", data);
+      const { access: accessToken, refresh: refreshToken } = data;
+      useLoginStore.setState((prevState) => {
+        return {
+          ...prevState,
+          tokens: {
+            accessToken,
+            refreshToken,
+          },
+        };
+      });
+
+      navigate("/arena/lobby");
+    },
     onError: (err) => {
-      console.log("ERROR!", err.message);
       useLoginStore.setState((prevState) => {
         return {
           ...prevState,
@@ -110,14 +127,16 @@ const Login = () => {
 
   return (
     <FullHeightContainer>
-      <Form
-        authenticationError={authenticationError}
-        pendingSubmissionResult={isPending}
-        handleChange={handleChange}
-        inputs={loginInputs}
-        handleSubmit={handleSubmit}
-        isSignUpForm={false}
-      />
+      <div className="flex centered h-100">
+        <Form
+          authenticationError={authenticationError}
+          pendingSubmissionResult={isPending}
+          handleChange={handleChange}
+          inputs={loginInputs}
+          handleSubmit={handleSubmit}
+          isSignUpForm={false}
+        />
+      </div>
     </FullHeightContainer>
   );
 };

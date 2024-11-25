@@ -5,7 +5,7 @@ interface ContainerProps {
 }
 
 const FullHeightContainer: React.FC<ContainerProps> = ({ children }) => {
-  return <div className="fill-height flex centered">{children}</div>;
+  return <div className="fill-height">{children}</div>;
 };
 
 export default FullHeightContainer;

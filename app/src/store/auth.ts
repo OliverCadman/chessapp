@@ -31,6 +31,10 @@ export const useLoginStore = create<AuthState>((set) => ({
     },
   ),
   authenticationError: undefined,
+  tokens: {
+    accessToken: undefined,
+    refreshToken: undefined
+  },
   setInput: (inputId: string, inputValue: string) =>
     set((state: any) => {
       const inputToUpdate = state.loginInputs.find(

@@ -1,30 +1,14 @@
 import React from "react";
 import LogoProps from "./logo.types";
+import LogoWrapper from "./LogoWrapper";
 
-const Logo: React.FC<LogoProps> = ({ fillColor }) => {
-  // const logoRef = useRef<SVGSVGElement>(null);
-
-  // const adjustBoundingBox = (elem: SVGSVGElement) => {
-  //   const boundingBox: DOMRect = elem.getBBox();
-  //   const viewBox = [
-  //     boundingBox.x,
-  //     boundingBox.y,
-  //     boundingBox.width,
-  //     boundingBox.height,
-  //   ].join(" ");
-
-  //   elem.setAttribute("viewBox", viewBox);
-  // };
-
-  // logoRef.current && adjustBoundingBox(logoRef.current);
-
+const LogoBanner: React.FC<LogoProps> = ({ fillColor }) => {
   return (
-    <svg
+    <LogoWrapper
       width="50"
       height="58"
       viewBox="0 0 50 58"
-      fill={fillColor}
-      xmlns="http://www.w3.org/2000/svg"
+      fillColor={fillColor}
     >
       <g clip-path="url(#clip0_70_2)">
         <path
@@ -77,8 +61,8 @@ const Logo: React.FC<LogoProps> = ({ fillColor }) => {
           <rect width="50" height="57.6795" fill="white" />
         </clipPath>
       </defs>
-    </svg>
+    </LogoWrapper>
   );
 };
 
-export default Logo;
+export default LogoBanner;

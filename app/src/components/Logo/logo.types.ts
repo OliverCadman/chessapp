@@ -1,5 +1,5 @@
 interface LogoProps {
-  fillColor: string;
+  fillColor?: string;
 }
 
 export default LogoProps;
