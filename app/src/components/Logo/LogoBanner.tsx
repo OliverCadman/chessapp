@@ -1,10 +1,10 @@
 import React from "react";
 import LogoProps from "./logo.types";
-import LogoWrapper from "./LogoWrapper";
+import IconWrapper from "../IconWrapper/IconWrapper";
 
 const LogoBanner: React.FC<LogoProps> = ({ fillColor }) => {
   return (
-    <LogoWrapper
+    <IconWrapper
       width="50"
       height="58"
       viewBox="0 0 50 58"
@@ -61,7 +61,7 @@ const LogoBanner: React.FC<LogoProps> = ({ fillColor }) => {
           <rect width="50" height="57.6795" fill="white" />
         </clipPath>
       </defs>
-    </LogoWrapper>
+    </IconWrapper>
   );
 };
 

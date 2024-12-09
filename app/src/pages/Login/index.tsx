@@ -5,10 +5,12 @@ import { useLoginStore } from "../../store/auth";
 import { IInput } from "../../store/store.types";
 import { useMutation } from "@tanstack/react-query";
 import { APIClient } from "../../api/client";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { nanoid } from "nanoid";
 
 const Login = () => {
   const apiClient = new APIClient();
+  const { lobbyId } = useLocation();
 
   const loginInputs = useLoginStore((state) => state.loginInputs);
   const authenticationError = useLoginStore(
@@ -35,7 +37,7 @@ const Login = () => {
         };
       });
 
-      navigate("/arena/lobby");
+      navigate(`/arena/lobby/waiting`);
     },
     onError: (err) => {
       useLoginStore.setState((prevState) => {

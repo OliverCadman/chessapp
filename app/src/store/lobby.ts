@@ -1,6 +1,20 @@
 import { create } from "zustand";
-import { LobbyState } from "./store.types";
+import { Colors, LobbyState } from "./store.types";
 
 export const useLobbyStore = create<LobbyState>((_) => ({
-  showChallengeModal: false,
+  challengeModalProps: {
+    showChallengeModal: false,
+    opponentId: undefined,
+    opponentName: undefined,
+  },
+  challengeOptions: {
+    timeControls: {
+      minutesPerSide: "1",
+      increment: "0",
+    },
+    color: undefined,
+    playerListPayload: undefined,
+  },
+
+  players: [],
 }));

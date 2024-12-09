@@ -8,7 +8,7 @@ interface LogoWrapperProps {
   fillColor?: string;
 }
 
-const LogoWrapper: React.FC<LogoWrapperProps> = ({
+const IconWrapper: React.FC<LogoWrapperProps> = ({
   width,
   height,
   viewBox,
@@ -28,4 +28,4 @@ const LogoWrapper: React.FC<LogoWrapperProps> = ({
   );
 };
 
-export default LogoWrapper;
+export default IconWrapper;

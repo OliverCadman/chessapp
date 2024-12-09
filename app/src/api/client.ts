@@ -1,5 +1,4 @@
-import { Exception } from "sass";
-import { BASE_API_URL, LOGIN_ENDPOINT } from "./constants";
+import { BASE_API_URL, LOGIN_ENDPOINT, REFRESH_ENDPOINT } from "./constants";
 import axios, { AxiosInstance, AxiosError } from "axios";
 
 export class APIClient {
@@ -18,8 +17,6 @@ export class APIClient {
     return this.axiosInstance
       .post(BASE_API_URL + LOGIN_ENDPOINT, data)
       .then((res) => {
-        console.log("Response...");
-        console.log(res.status);
         if (res.status === 401) {
           return {
             status: res.status,
@@ -34,5 +31,11 @@ export class APIClient {
         if (err.status === 401)
           throw Error("Could not authenticate with the provided credentials.");
       });
+  }
+
+  async tokenRefreshRequest(data: { refresh: string }) {
+    return this.axiosInstance
+      .post(BASE_API_URL + REFRESH_ENDPOINT, data)
+      .then((res) => res.data);
   }
 }

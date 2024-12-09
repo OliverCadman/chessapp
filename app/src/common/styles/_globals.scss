@@ -51,6 +51,10 @@ input:-webkit-autofill:active {
     transition: background-color 0s 600000s, color 0s 600000s !important;
 }
 
+.hidden {
+    display: none;
+}
+
 .fill-height {
     min-height: calc(100vh - 90px); // Height of navbar: 90px;
     height: 1px;
@@ -65,12 +69,28 @@ input:-webkit-autofill:active {
     justify-content: space-between;
 }
 
+.column {
+    flex-direction: column;
+}
+
 .flex {
     display: flex;
 }
 
+.stretch {
+    align-items: stretch;
+}
+
+.justify-center {
+    justify-content: center;
+}
+
 .h-100 {
     min-height: 100%;
+}
+
+.relative {
+    position: relative;
 }
 
 @include tablet-768() {
@@ -132,4 +152,19 @@ input:-webkit-autofill:active {
         background-color: $dusk-blue-hover;
 
     }
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 10;
+    overflow: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 2.5rem;
 }

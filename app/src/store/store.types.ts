@@ -12,8 +12,8 @@ export interface IInvalidInput {
 }
 
 export interface IAuthToken {
-  accessToken?: string;
-  refreshToken?: string;
+  accessToken: string;
+  refreshToken: string;
 }
 
 export type AuthState = {
@@ -25,6 +25,51 @@ export type AuthState = {
   setInputsInvalid: (inputIds: IInvalidInput[]) => void;
 };
 
+interface ITimeControls {
+  minutesPerSide: string;
+  increment: string;
+}
+
+interface ILastSeen {
+  dateUnit: string;
+  timeDiff: string;
+}
+
+interface IPlayer {
+  user: {
+    email?: string;
+    id?: number;
+  };
+  lastSeen: ILastSeen;
+}
+
+export enum Colors {
+  BLACK = "black",
+  WHITE = "white",
+  RANDOM = "random",
+}
+
+interface IChallengeOptions {
+  timeControls: ITimeControls;
+  color?: string;
+}
+
+export interface IPlayerListPayload {
+  group_name: string;
+  room_name: string;
+  type: string;
+  data: {
+    current_user_email: string;
+  };
+}
+
 export type LobbyState = {
-  showChallengeModal: boolean;
+  challengeModalProps: {
+    showChallengeModal: boolean;
+    opponentId?: number;
+    opponentName?: string;
+  };
+  challengeOptions: IChallengeOptions;
+  players: IPlayer[];
+  playerListPayload?: IPlayerListPayload;
 };

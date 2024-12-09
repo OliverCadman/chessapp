@@ -1,6 +1,6 @@
 import React from "react";
 
-import LogoWrapper from "./LogoWrapper";
+import LogoWrapper from "../IconWrapper/IconWrapper";
 import LogoProps from "./logo.types";
 
 const LogoHero: React.FC<LogoProps> = () => {

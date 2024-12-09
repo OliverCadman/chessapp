@@ -2,7 +2,7 @@
 @use "../../common/styles/variables" as *;
 
 .player-list {
-    
+
     padding: 3rem 2rem;
     width: 100%;
 
@@ -48,6 +48,7 @@
     p.last-seen {
         font-family: $font-secondary;
     }
+
     p.user {
         font-size: 1rem;
         font-weight: $fw-light;
@@ -92,6 +93,19 @@
 @include desktop-1440() {
     .player-list {
         max-width: 975px;
+    }
+}
+
+.online {
+    margin-right: 1rem;
+    &:before {
+        content: "";
+        width: 13px;
+        height: 13px;
+        border-radius: 50%;
+        background: $green-gradient;
+        position: absolute;
+        box-shadow: 0px 0px 10px rgb(71, 71, 71);
     }
 }
 
