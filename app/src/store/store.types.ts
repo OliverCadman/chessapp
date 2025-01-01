@@ -68,6 +68,7 @@ export type LobbyState = {
     showChallengeModal: boolean;
     opponentId?: number;
     opponentName?: string;
+    playersChallenged: number[];
   };
   challengeOptions: IChallengeOptions;
   players: IPlayer[];

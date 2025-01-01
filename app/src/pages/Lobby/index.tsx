@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import FullHeightContainer from "../../components/FullHeightContainer/FullHeightContainer";
-import ChallengeModal from "../../components/ChallengeModal";
+import ChallengeModal from "../../components/ChallengeModal/ChallengeModal";
 import { useLoginStore } from "../../store/auth";
 import useLobbySocket from "../../hooks/useLobbySocket";
 import { useLobbyStore } from "../../store/lobby";
@@ -138,9 +138,22 @@ const Lobby = () => {
       },
     };
 
-    console.log(payload);
-
     socket.sendMessage(JSON.stringify(payload));
+
+    useLobbyStore.setState((prevState) => {
+      if (!prevState.challengeModalProps.opponentId) return prevState;
+      else
+        return {
+          ...prevState,
+          challengeModalProps: {
+            ...prevState.challengeModalProps,
+            playersChallenged: [
+              ...prevState.challengeModalProps.playersChallenged,
+              prevState.challengeModalProps.opponentId,
+            ],
+          },
+        };
+    });
   };
 
   const handleRangeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -194,7 +207,7 @@ const Lobby = () => {
             {players &&
               players.map((player, idx) => {
                 return (
-                  <li>
+                  <li key={player.user.id}>
                     {idx % 2 == 0 ? (
                       <div className="player-list__item">
                         <div className="user-details">
@@ -218,6 +231,7 @@ const Lobby = () => {
                                 return {
                                   ...prevState,
                                   challengeModalProps: {
+                                    ...prevState.challengeModalProps,
                                     showChallengeModal:
                                       !prevState?.challengeModalProps
                                         .showChallengeModal,
@@ -249,6 +263,7 @@ const Lobby = () => {
           increment={challengeOptions.timeControls.increment}
           playerName={challengeModalProps.opponentName}
           playerId={challengeModalProps.opponentId}
+          currentPlayersChallenged={challengeModalProps.playersChallenged}
           handleColorChange={handleColorChange}
           handleSubmit={handleSubmit}
         />

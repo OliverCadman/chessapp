@@ -1,6 +1,6 @@
 import React from "react";
 import { IInput } from "../../store/store.types";
-import FormError from "../FormError";
+import FormError from "../FormError/FormError";
 import Spinner from "../Spinner/Spinner";
 
 interface FormProps {

@@ -6,6 +6,8 @@ export const useLobbyStore = create<LobbyState>((_) => ({
     showChallengeModal: false,
     opponentId: undefined,
     opponentName: undefined,
+    challengeSent: false,
+    playersChallenged: [],
   },
   challengeOptions: {
     timeControls: {

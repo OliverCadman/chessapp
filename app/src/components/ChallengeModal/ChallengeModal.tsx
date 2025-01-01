@@ -1,5 +1,5 @@
 import React from "react";
-import ModalOverlay from "../ModalOverlay";
+import ModalOverlay from "../ModalOverlay/ModalOverlay";
 import BlackKing from "../../assets/pieces/black/Chess_kdt45.svg?react";
 import WhiteKing from "../../assets/pieces/white/Chess_klt45.svg?react";
 import MixedKing from "../../assets/pieces/mixed/wbK.svg?react";
@@ -8,6 +8,7 @@ import { Colors } from "../../store/store.types";
 interface ChallengeModalProps {
   playerName?: string;
   playerId?: number;
+  currentPlayersChallenged: number[];
   minutesPerSide: string;
   increment: string;
   color?: string;
@@ -18,14 +19,16 @@ interface ChallengeModalProps {
 
 const ChallengeModal: React.FC<ChallengeModalProps> = ({
   playerName,
+  playerId,
   minutesPerSide,
   increment,
   handleRangeChange,
   handleColorChange,
   color,
   handleSubmit,
+  currentPlayersChallenged,
 }) => {
-  return (
+  return playerId ? (
     <ModalOverlay>
       <aside className="challenge-modal">
         <div className="challenge-modal__header">
@@ -103,15 +106,24 @@ const ChallengeModal: React.FC<ChallengeModalProps> = ({
                 </div>
               </div>
             </div>
+
             <div className="challenge-modal__submit flex centered">
-              <button type="submit" className="btn challenge-btn">
-                Send Challenge
+              <button
+                type="submit"
+                className={`btn challenge-btn ${currentPlayersChallenged.includes(playerId) ? "disabled" : ""}`}
+                disabled={currentPlayersChallenged.includes(playerId)}
+              >
+                {!currentPlayersChallenged.includes(playerId)
+                  ? "Send Challenge"
+                  : "Challenge sent."}
               </button>
             </div>
           </form>
         </div>
       </aside>
     </ModalOverlay>
+  ) : (
+    ""
   );
 };
 

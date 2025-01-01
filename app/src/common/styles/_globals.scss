@@ -152,6 +152,11 @@ input:-webkit-autofill:active {
         background-color: $dusk-blue-hover;
 
     }
+
+    &.disabled {
+        background: $grey-gradient;
+        color: $disabled !important;
+    }
 }
 
 .overlay {

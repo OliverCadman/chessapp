@@ -1,6 +1,6 @@
 import React from "react";
 import FullHeightContainer from "../../components/FullHeightContainer/FullHeightContainer";
-import Form from "../../components/Form";
+import Form from "../../components/Form/Form";
 import { useLoginStore } from "../../store/auth";
 import { IInput } from "../../store/store.types";
 import { useMutation } from "@tanstack/react-query";

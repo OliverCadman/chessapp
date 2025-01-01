@@ -13,6 +13,7 @@ const ModalOverlay: React.FC<ChildProps> = ({ children }) => {
         return {
           ...prevState,
           challengeModalProps: {
+            ...prevState.challengeModalProps,
             showChallengeModal: false,
             opponentId: undefined,
             opponentName: undefined,
