@@ -1,3 +1,5 @@
+import Board from "../models/Board";
+
 export interface IInput {
   inputId: string;
   inputLabel: string;
@@ -74,3 +76,7 @@ export type LobbyState = {
   players: IPlayer[];
   playerListPayload?: IPlayerListPayload;
 };
+
+export type ArenaState = {
+  board: Board
+}
