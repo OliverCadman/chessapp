@@ -1,12 +1,45 @@
-.board__container {
-    width: 100%;
-    height: 100%;
-    max-width: 600px;
-    max-height: 600px;
-    aspect-ratio: 1 / 1;
-    padding: 1rem;
+@use "../../common/styles/mixins" as *;
 
-    img {
+.board__container {
+    width: 350px;
+    height: 350px;
+    aspect-ratio: 1 / 1;
+    position: relative;
+
+    img.board {
         width: 100%;
+        position: absolute;
+        top: 50%;
+        left: 0;
+        transform: translateY(-50%);
     }
 }
+
+.board__interface {
+    height: 100%;
+    width: 100%;
+}
+
+.square__container {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    $num-ranks: 8;
+    $num-files: 8;
+    display: grid;
+    grid-template-columns: repeat($num-files, 1fr);
+    grid-template-rows: repeat($num-files, 1fr);
+}
+
+@include tablet-768() {
+    .board__container {
+        width: 600px;
+        height: 600px;
+    }
+}
+
+// @include desktop-1440() {
+//     .board__container {
+//         width:
+//     }
+// }

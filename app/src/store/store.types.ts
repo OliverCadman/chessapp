@@ -77,6 +77,14 @@ export type LobbyState = {
   playerListPayload?: IPlayerListPayload;
 };
 
-export type ArenaState = {
-  board: Board
+interface IActivePiece {
+  pieceId: string;
+  color: string;
+  coordinates: { [key: string]: number };
 }
+
+export type ArenaState = {
+  board: Board;
+  whitePerspective: boolean;
+  activePiece: IActivePiece | null;
+};

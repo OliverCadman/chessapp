@@ -1,16 +1,31 @@
-
+import Piece from "./Piece";
 
 interface ICoords {
-    [key: string]: number;
+  [key: string]: number;
 }
 
-class Square {
-    coordinates: ICoords;
-    notation: string;
-    constructor(coordinates: ICoords, notation: string) {
-        this.coordinates = coordinates;
-        this.notation = notation;
-    }
+export class Square {
+  coordinates: ICoords;
+  notation: string;
+  pieceOnThisSquare: Piece | null;
+
+  constructor(
+    coordinates: ICoords,
+    notation: string,
+    pieceOnThisSquare: Piece | null,
+  ) {
+    this.coordinates = coordinates;
+    this.notation = notation;
+    this.pieceOnThisSquare = pieceOnThisSquare;
+  }
+
+  setPiece(piece: Piece) {
+    this.pieceOnThisSquare = piece;
+  }
+
+  getPiece() {
+    return this.pieceOnThisSquare;
+  }
 }
 
-export default Square
+export default Square;

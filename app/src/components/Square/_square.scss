@@ -1,0 +1,16 @@
+@use "../../common/styles/variables" as *;
+
+.square {
+    width: 100%;
+    position: relative;
+
+    .notation {
+        margin: 0;
+        font-family: $font-secondary;
+        font-size: .75rem;
+        position: absolute;
+        bottom: 2px;
+        left: 2px;
+
+    }
+}
