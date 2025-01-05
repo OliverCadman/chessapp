@@ -3,15 +3,16 @@ import Piece from "./Piece";
 
 import { Chess } from "chess.js";
 
-class Board {
+export class Board {
   playerIsWhite: boolean;
+  whiteTurnToMove: boolean;
   boardInterface: Square[][];
   chess: Chess;
 
   constructor(playerIsWhite: boolean) {
     this.playerIsWhite = playerIsWhite;
     this.boardInterface = this.init();
-
+    this.whiteTurnToMove = this.playerIsWhite;
     // Initialize ChessJS engine
     this.chess = new Chess();
   }
@@ -20,7 +21,9 @@ class Board {
 
   promote() {}
 
-  makeMove(piece: Piece) {}
+  makeMove() {
+    console.log("MOVE MADE");
+  }
 
   canMakeMove() {}
 
@@ -96,8 +99,8 @@ class Board {
       "br1",
       "bn1",
       "bb1",
-      "bk1",
       "bq1",
+      "bk1",
       "bb2",
       "bn2",
       "br2",
@@ -131,6 +134,7 @@ class Board {
       for (let j = 0; j < RANKS.length; j++) {
         if (i === 0) {
           board[i][this.playerIsWhite ? j : 7 - j].setPiece(
+            null,
             new Piece(
               this.playerIsWhite ? "white" : "black",
               this.playerIsWhite
@@ -141,6 +145,7 @@ class Board {
           );
 
           board[i + 1][this.playerIsWhite ? j : 7 - j].setPiece(
+            null,
             new Piece(
               this.playerIsWhite ? "white" : "black",
               this.playerIsWhite
@@ -151,21 +156,23 @@ class Board {
           );
         } else if (i == RANKS.length - 2) {
           board[i][this.playerIsWhite ? j : 7 - j].setPiece(
+            null,
             new Piece(
               this.playerIsWhite ? "black" : "white",
               this.playerIsWhite
-                ? this.reverseArray(whitePawnIds)[j]
-                : this.reverseArray(blackPawnIds)[j],
+                ? this.reverseArray(blackPawnIds)[j]
+                : this.reverseArray(whitePawnIds)[j],
               "pawn",
             ),
           );
 
           board[i + 1][this.playerIsWhite ? j : 7 - j].setPiece(
+            null,
             new Piece(
               this.playerIsWhite ? "black" : "white",
               this.playerIsWhite
-                ? this.reverseArray(whitePieceIds)[j]
-                : this.reverseArray(blackPieceIds)[j],
+                ? this.reverseArray(blackPieceIds)[j]
+                : this.reverseArray(whitePieceIds)[j],
               backrank[j],
             ),
           );
@@ -176,5 +183,3 @@ class Board {
     return board;
   }
 }
-
-export default Board;

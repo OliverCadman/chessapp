@@ -19,8 +19,16 @@ export class Square {
     this.pieceOnThisSquare = pieceOnThisSquare;
   }
 
-  setPiece(piece: Piece) {
-    this.pieceOnThisSquare = piece;
+  setPiece(departedSquare: Square | null, piece: Piece) {
+    if (this.pieceOnThisSquare) {
+      return;
+    } else this.pieceOnThisSquare = piece;
+
+    if (
+      departedSquare?.pieceOnThisSquare &&
+      departedSquare.pieceOnThisSquare === piece
+    )
+      departedSquare.pieceOnThisSquare = null;
   }
 
   getPiece() {

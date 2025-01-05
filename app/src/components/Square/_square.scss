@@ -9,8 +9,16 @@
         font-family: $font-secondary;
         font-size: .75rem;
         position: absolute;
-        bottom: 2px;
-        left: 2px;
+        
+        &.file {
+            bottom: 2px;
+            left: 2px;
+        }
+
+        &.rank {
+            top: 2px;
+            right: 2px;
+        }
 
     }
 }
