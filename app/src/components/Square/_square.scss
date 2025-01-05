@@ -7,8 +7,10 @@
     .notation {
         margin: 0;
         font-family: $font-secondary;
-        font-size: .75rem;
+        font-size: clamp(.4rem, 1vw, .65rem);
         position: absolute;
+        font-weight: $fw-semibold;
+        color: $very-dark-grey;
         
         &.file {
             bottom: 2px;
