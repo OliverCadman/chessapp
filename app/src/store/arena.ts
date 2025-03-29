@@ -1,11 +1,34 @@
 import { create } from "zustand";
 import { ArenaState } from "./store.types";
 import { Board } from "../models/Board";
+import { CoordType } from "../common/types/CoordType";
+import BoardManager from "../models/BoardManager";
+import Square from "../models/Square";
 
-const useArenaState = create<ArenaState>(() => ({
-  board: new Board(true), // Boolean flag. true = White's perspective.
+const boardManager = new BoardManager();
+
+const useArenaState = create<ArenaState>((set) => ({
+  board: new Board(true).getBoard(),
   whitePerspective: true,
+  whiteTurnToMove: true,
   activePiece: null,
+  setMove: (
+    board: Square[][],
+    toCoordinates: CoordType,
+    fromCoordinates: CoordType
+  )  => set((state) => {
+      const newBoard = boardManager.makeMove(
+        board,
+        toCoordinates,
+        fromCoordinates
+      )
+
+      return {
+        ...state,
+        board: newBoard && newBoard[0],
+        whiteTurnToMove: newBoard && newBoard[1] ? !state.whiteTurnToMove : state.whiteTurnToMove
+      }
+  })
 }));
 
 export default useArenaState;

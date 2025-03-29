@@ -1,4 +1,6 @@
 import Board from "../models/Board";
+import { CoordType } from "../common/types/CoordType";
+import Square from "../models/Square";
 
 export interface IInput {
   inputId: string;
@@ -87,4 +89,10 @@ export type ArenaState = {
   board: Board;
   whitePerspective: boolean;
   activePiece: IActivePiece | null;
+  whiteTurnToMove: boolean;
+  setMove: (
+    board: Square[][],
+    toCoordinates: CoordType,
+    fromCoordinates: CoordType
+  ) => void
 };

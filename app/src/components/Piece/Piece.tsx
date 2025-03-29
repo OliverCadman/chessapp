@@ -1,6 +1,8 @@
 import React from "react";
 import { useDrag } from "react-dnd";
 import PieceType from "./constants/PieceType";
+import { PieceData } from "../../common/types/PieceData";
+
 
 interface IPiece {
   isWhite: boolean;
@@ -9,36 +11,40 @@ interface IPiece {
   pieceImgUrls: string[] | null;
   pieceName: string;
   pieceId: string;
+  pieceColor: string;
   coordinates: { [key: string]: number };
 }
 
 const Piece: React.FC<IPiece> = ({
   isWhite,
   whitePerspective,
-  whiteTurnToMove,
   pieceImgUrls,
   pieceName,
   pieceId,
+  pieceColor,
   coordinates,
+  whiteTurnToMove
 }) => {
-  const [{ isDragging }, dragRef] = useDrag(() => ({
-    item: {
+
+  const [{ isDragging }, dragRef] = useDrag(() => {
+    const data: PieceData = {
       pieceId,
       pieceName,
       coordinates,
-      whiteTurnToMove,
-    },
-    type: PieceType.CHESSPIECE,
-    collect: (monitor) => {
-      console.log(monitor.isDragging());
-      return {
-        isDragging: !!monitor.isDragging(),
-        data: monitor.getItem(),
-      };
-    },
-  }));
-
-  console.log("is dragging?", isDragging);
+      pieceColor,
+      whiteTurnToMove
+    };
+    return {
+      item: data,
+      type: PieceType.CHESSPIECE,
+      collect: (monitor) => {
+        return {
+          isDragging: !!monitor.isDragging(),
+          data: monitor.getItem(),
+        };
+      }
+    };
+  }, [pieceId]);
 
   const colorIndex = isWhite ? 0 : 1;
   return pieceImgUrls ? (

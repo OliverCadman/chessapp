@@ -1,24 +1,29 @@
 import React from "react";
 import Piece from "../Piece/Piece";
 import PieceType from "../Piece/constants/PieceType";
-import { useDrop } from "react-dnd";
+import { CoordType } from "../../common/types/CoordType";
+import { PieceData } from "../../common/types/PieceData";
+import { useDrop, DropTargetMonitor } from "react-dnd";
 import SquareOverlay from "../SquareOverlay/SquareOverlay";
-import { Board as Game } from "../../models/Board";
 
 interface SquareProps {
   isPieceOnThisSquare: boolean;
-  game: Game;
   whitePerspective: boolean;
   isWhite: boolean;
   pieceImgUrls: string[] | null;
   pieceName: string | null;
   pieceId: string | null;
-  notation: string;
+  pieceColor: string | null;
   whiteTurnToMove: boolean;
   coordinates: { [key: string]: number };
   file?: string;
   rank?: string;
-  handlePieceDrop: () => void;
+  handlePieceDrop: (
+    toCoordinates: CoordType,
+    fromCoordinates: CoordType,
+    color: string,
+    whiteTurnToMove: boolean,
+  ) => void;
 }
 
 const Square: React.FC<SquareProps> = ({
@@ -28,32 +33,35 @@ const Square: React.FC<SquareProps> = ({
   pieceImgUrls,
   pieceName,
   pieceId,
-  notation,
+  pieceColor,
   coordinates,
   handlePieceDrop,
   whiteTurnToMove,
   file,
   rank,
-  game,
 }) => {
-  const [{ isOver, data, canDrop }, drop] = useDrop(() => ({
+
+  const [{ isOver }, drop] = useDrop(() => ({
     accept: PieceType.CHESSPIECE,
 
-    collect: (monitor) => {
-      if (monitor.getItem()) {
-        const item = monitor.getItem();
-        console.log(item);
-      }
+    collect: (monitor: DropTargetMonitor) => {
       return {
-        canDrop: true,
         data: monitor.getItem(),
         isOver: !!monitor.isOver(),
+        canDrop: !!monitor.canDrop()
       };
     },
-    drop: () => {
-      handlePieceDrop();
-    },
-  }));
+    drop: (item: PieceData) => {
+      if (!item) return;
+
+      handlePieceDrop(
+        coordinates,
+        item.coordinates,
+        item.pieceColor,
+        whiteTurnToMove
+      );
+    }
+  }), [whiteTurnToMove]);
 
   return (
     <div
@@ -65,15 +73,16 @@ const Square: React.FC<SquareProps> = ({
         {file}
       </p>
       <p className="notation rank">{rank}</p>
-      {!!isPieceOnThisSquare && !!pieceName && !!pieceId && (
+      {!!isPieceOnThisSquare && !!pieceName && !!pieceId && !!pieceColor && (
         <Piece
           whitePerspective={whitePerspective}
-          whiteTurnToMove={whiteTurnToMove}
           pieceImgUrls={pieceImgUrls}
           pieceName={pieceName}
           isWhite={isWhite}
           coordinates={coordinates}
           pieceId={pieceId}
+          pieceColor={pieceColor}
+          whiteTurnToMove={whiteTurnToMove}
         />
       )}
       {isOver && !isPieceOnThisSquare && <SquareOverlay />}

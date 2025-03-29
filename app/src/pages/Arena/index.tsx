@@ -1,30 +1,46 @@
+import React from "react";
 import FullHeightContainer from "../../components/FullHeightContainer/FullHeightContainer";
 import Board from "../../components/Board/Board";
+import { CoordType } from "../../common/types/CoordType";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { TouchBackend } from "react-dnd-touch-backend";
 import mobileCheck from "../../utils/mobileDeviceCheck";
 
 import useArenaState from "../../store/arena";
+import { PieceColors } from "../../constants/PieceColors";
 
-const Arena = () => {
-  const gameBoard = useArenaState((state) => state.board);
-  const whitePerspective = useArenaState((state) => state.whitePerspective);
+const Arena: React.FC = () => {
+  const board = useArenaState((state) => state.board);
+  const whiteTurnToMove = useArenaState((state) => state.whiteTurnToMove)
+  const whitePerspective = useArenaState((state) => state.whitePerspective)
+  const setMove = useArenaState((state) => state.setMove)
 
-  const handlePieceDrop = () => {
-    console.log("piece dropped");
-    gameBoard.makeMove();
+  const handlePieceDrop = (
+    toCoordinates: CoordType,
+    fromCoordinates: CoordType,
+    color: string,
+    whiteTurnToMove: boolean,
+  ) => {
+
+    if (color === PieceColors.BLACK && whiteTurnToMove || 
+      color === PieceColors.WHITE && !whiteTurnToMove) return 
+    
+    setMove(
+      board,
+      toCoordinates,
+      fromCoordinates
+    )
   };
 
   return (
     <FullHeightContainer extraClasses="flex centered column">
-      <DndProvider backend={mobileCheck() ? TouchBackend : HTML5Backend}>
+      <DndProvider debugMode={true} backend={mobileCheck() ? TouchBackend : HTML5Backend}>
         <Board
           handlePieceDrop={handlePieceDrop}
-          board={gameBoard.getBoard()}
+          board={board}
           whitePerspective={whitePerspective}
-          whiteTurnToMove={gameBoard.whiteTurnToMove}
-          game={gameBoard}
+          whiteTurnToMove={whiteTurnToMove}
         />
       </DndProvider>
       <button

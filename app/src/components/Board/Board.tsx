@@ -1,15 +1,20 @@
 import React from "react";
 import Square from "../Square/Square";
 import { Square as SquareModel } from "../../models/Square";
+import { CoordType } from "../../common/types/CoordType";
 import PieceMap from "../../data/piece-map";
-import { Board as Game } from "../../models/Board";
 
 interface BoardProps {
   board: SquareModel[][];
-  game: Game;
   whitePerspective: boolean;
   whiteTurnToMove: boolean;
-  handlePieceDrop: () => void;
+  handlePieceDrop: (
+    toCoordinates: CoordType,
+    fromCoordinates: CoordType,
+    pieceId: string,
+    color: string,
+    whiteTurnToMove: boolean,
+  ) => void;
 }
 
 const Board: React.FC<BoardProps> = ({
@@ -17,14 +22,13 @@ const Board: React.FC<BoardProps> = ({
   whitePerspective,
   handlePieceDrop,
   whiteTurnToMove,
-  game,
 }) => {
   return (
     <div className="board__container flex centered">
       <div className="board__interface">
         <img src="/assets/images/board/brown.png" className="board" />
         <div
-          className={`square__container ${whitePerspective ? "flipped" : ""}`}
+          className={`square__container ${!whitePerspective ? "flipped" : ""}`}
         >
           {board.map((row, outerIndex) => {
             return row.map((col, innerIndex) => {
@@ -35,17 +39,17 @@ const Board: React.FC<BoardProps> = ({
 
               // File notations
               const showFileNotationFromWhitePerspective =
-                outerIndex === 0 && whitePerspective;
+                outerIndex === 7 && whitePerspective;
 
               const showFileNotationFromBlackPerspective =
-                outerIndex === 7 && !whitePerspective;
+                outerIndex === 0 && !whitePerspective;
 
               // Rank notations
               const showRankNotationFromWhitePerspective =
-                innerIndex === 0 && whitePerspective;
+                innerIndex === 7 && whitePerspective;
 
               const showRankNotationFromBlackPerspective =
-                innerIndex === 7 && !whitePerspective;
+                innerIndex === 0 && !whitePerspective;
 
               return (
                 <Square
@@ -63,7 +67,6 @@ const Board: React.FC<BoardProps> = ({
                   }
                   whiteTurnToMove={whiteTurnToMove}
                   isPieceOnThisSquare={isPieceOnThisSquare}
-                  game={game}
                   handlePieceDrop={handlePieceDrop}
                   pieceImgUrls={
                     col.pieceOnThisSquare &&
@@ -75,11 +78,13 @@ const Board: React.FC<BoardProps> = ({
                   pieceId={
                     col.pieceOnThisSquare && col.pieceOnThisSquare.pieceId
                   }
+                  pieceColor={
+                    col.pieceOnThisSquare && col.pieceOnThisSquare.color
+                  }
                   whitePerspective={whitePerspective}
                   isWhite={
                     isPieceOnThisSquare && col.getPiece()?.color === "white"
                   }
-                  notation={col.notation}
                   coordinates={col.coordinates}
                 />
               );

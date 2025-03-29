@@ -4,6 +4,7 @@
     width: 100%;
     position: relative;
 
+
     .notation {
         margin: 0;
         font-family: $font-secondary;
@@ -11,15 +12,16 @@
         position: absolute;
         font-weight: $fw-semibold;
         color: $very-dark-grey;
-        
+        transform: rotate(180deg);
+
         &.file {
-            bottom: 2px;
-            left: 2px;
+            top: 2px;
+            right: 2px;
         }
 
         &.rank {
-            top: 2px;
-            right: 2px;
+            bottom: 2px;
+            left: 2px;
         }
 
     }

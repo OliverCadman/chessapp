@@ -1,34 +1,21 @@
 import Square from "./Square";
 import Piece from "./Piece";
+import { FILE_LENGTH, RANK_LENGTH } from "./contants";
 
 import { Chess } from "chess.js";
 
 export class Board {
+  board: Square[][]
   playerIsWhite: boolean;
-  whiteTurnToMove: boolean;
-  boardInterface: Square[][];
-  chess: Chess;
+  private rankToCoord: {[key: string]: number}
 
   constructor(playerIsWhite: boolean) {
-    this.playerIsWhite = playerIsWhite;
-    this.boardInterface = this.init();
-    this.whiteTurnToMove = this.playerIsWhite;
-    // Initialize ChessJS engine
-    this.chess = new Chess();
+    this.board = this.init();
+    this.playerIsWhite = playerIsWhite
   }
-
-  canCastle() {}
-
-  promote() {}
-
-  makeMove() {
-    console.log("MOVE MADE");
-  }
-
-  canMakeMove() {}
 
   getBoard() {
-    return this.boardInterface;
+    return this.board;
   }
 
   reverseArray(arr: string[]) {
@@ -50,17 +37,6 @@ export class Board {
     const RANKS: string[] = this.playerIsWhite
       ? ["1", "2", "3", "4", "5", "6", "7", "8"]
       : ["8", "7", "6", "5", "4", "3", "2", "1"];
-
-    const rankToCoord: { [key: number]: number } = {
-      7: 0,
-      6: 1,
-      5: 2,
-      4: 3,
-      3: 4,
-      2: 5,
-      1: 6,
-      0: 7,
-    };
 
     const backrank = [
       "rook",
@@ -116,6 +92,17 @@ export class Board {
       "bp7",
       "bp8",
     ];
+
+    const rankToCoord: {[key: number]: number} = {
+            7: 0,
+            6: 1,
+            5: 2,
+            4: 3,
+            3: 4,
+            2: 5,
+            1: 6,
+            0: 7,
+        };
 
     for (let i = 0; i < FILES.length; i++) {
       board.push([]);
