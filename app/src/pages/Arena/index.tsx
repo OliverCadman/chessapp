@@ -21,7 +21,14 @@ const Arena: React.FC = () => {
     fromCoordinates: CoordType,
     color: string,
     whiteTurnToMove: boolean,
+    fromNotation: string,
+    toNotation: string
   ) => {
+
+    console.group("Move info")
+    console.log(fromCoordinates, toCoordinates)
+    console.log(`From ${fromNotation} to ${toNotation}`)
+    console.groupEnd()
 
     if (color === PieceColors.BLACK && whiteTurnToMove || 
       color === PieceColors.WHITE && !whiteTurnToMove) return 
@@ -29,7 +36,9 @@ const Arena: React.FC = () => {
     setMove(
       board,
       toCoordinates,
-      fromCoordinates
+      fromCoordinates,
+      fromNotation,
+      toNotation
     )
   };
 

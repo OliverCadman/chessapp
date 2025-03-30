@@ -93,6 +93,8 @@ export type ArenaState = {
   setMove: (
     board: Square[][],
     toCoordinates: CoordType,
-    fromCoordinates: CoordType
+    fromCoordinates: CoordType,
+    fromNotation: string,
+    toNotation: string
   ) => void
 };

@@ -6,4 +6,5 @@ export interface PieceData {
   pieceColor: string;
   coordinates: CoordType;
   whiteTurnToMove: boolean;
+  notation: string;
 }

@@ -13,6 +13,7 @@ interface IPiece {
   pieceId: string;
   pieceColor: string;
   coordinates: { [key: string]: number };
+  notation: string;
 }
 
 const Piece: React.FC<IPiece> = ({
@@ -23,7 +24,8 @@ const Piece: React.FC<IPiece> = ({
   pieceId,
   pieceColor,
   coordinates,
-  whiteTurnToMove
+  whiteTurnToMove,
+  notation
 }) => {
 
   const [{ isDragging }, dragRef] = useDrag(() => {
@@ -32,7 +34,8 @@ const Piece: React.FC<IPiece> = ({
       pieceName,
       coordinates,
       pieceColor,
-      whiteTurnToMove
+      whiteTurnToMove,
+      notation
     };
     return {
       item: data,

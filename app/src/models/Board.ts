@@ -1,6 +1,6 @@
 import Square from "./Square";
 import Piece from "./Piece";
-import { FILE_LENGTH, RANK_LENGTH } from "./contants";
+import { FILE_LENGTH, RANK_LENGTH } from "./constants";
 
 import { Chess } from "chess.js";
 
@@ -109,7 +109,7 @@ export class Board {
       for (let j = 0; j < RANKS.length; j++) {
         board[i].push(
           new Square(
-            { x: rankToCoord[j], y: i },
+            { x: j, y: rankToCoord[i] },
             this.reverseArray(FILES)[j] + RANKS[i],
             null,
           ),

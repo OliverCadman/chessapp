@@ -15,12 +15,16 @@ const useArenaState = create<ArenaState>((set) => ({
   setMove: (
     board: Square[][],
     toCoordinates: CoordType,
-    fromCoordinates: CoordType
+    fromCoordinates: CoordType,
+    fromNotation: string,
+    toNotation: string
   )  => set((state) => {
       const newBoard = boardManager.makeMove(
         board,
         toCoordinates,
-        fromCoordinates
+        fromCoordinates,
+        fromNotation,
+        toNotation
       )
 
       return {

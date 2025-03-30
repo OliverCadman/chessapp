@@ -11,9 +11,10 @@ interface BoardProps {
   handlePieceDrop: (
     toCoordinates: CoordType,
     fromCoordinates: CoordType,
-    pieceId: string,
     color: string,
     whiteTurnToMove: boolean,
+    fromNotation: string,
+    toNotation: string
   ) => void;
 }
 
@@ -65,6 +66,7 @@ const Board: React.FC<BoardProps> = ({
                       ? rank
                       : ""
                   }
+                  notation={col.notation}
                   whiteTurnToMove={whiteTurnToMove}
                   isPieceOnThisSquare={isPieceOnThisSquare}
                   handlePieceDrop={handlePieceDrop}

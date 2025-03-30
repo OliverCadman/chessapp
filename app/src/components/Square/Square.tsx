@@ -18,11 +18,14 @@ interface SquareProps {
   coordinates: { [key: string]: number };
   file?: string;
   rank?: string;
+  notation: string;
   handlePieceDrop: (
     toCoordinates: CoordType,
     fromCoordinates: CoordType,
     color: string,
     whiteTurnToMove: boolean,
+    fromNotation: string,
+    toNotation: string
   ) => void;
 }
 
@@ -39,6 +42,7 @@ const Square: React.FC<SquareProps> = ({
   whiteTurnToMove,
   file,
   rank,
+  notation
 }) => {
 
   const [{ isOver }, drop] = useDrop(() => ({
@@ -58,7 +62,9 @@ const Square: React.FC<SquareProps> = ({
         coordinates,
         item.coordinates,
         item.pieceColor,
-        whiteTurnToMove
+        whiteTurnToMove,
+        item.notation, // Notation of departed square
+        notation // Notation of target square
       );
     }
   }), [whiteTurnToMove]);
@@ -83,6 +89,7 @@ const Square: React.FC<SquareProps> = ({
           pieceId={pieceId}
           pieceColor={pieceColor}
           whiteTurnToMove={whiteTurnToMove}
+          notation={notation}
         />
       )}
       {isOver && !isPieceOnThisSquare && <SquareOverlay />}
