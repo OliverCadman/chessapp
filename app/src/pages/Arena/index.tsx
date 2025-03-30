@@ -15,6 +15,7 @@ const Arena: React.FC = () => {
   const whiteTurnToMove = useArenaState((state) => state.whiteTurnToMove)
   const whitePerspective = useArenaState((state) => state.whitePerspective)
   const setMove = useArenaState((state) => state.setMove)
+  const moveData = useArenaState((state) => state.moveData)
 
   const handlePieceDrop = (
     toCoordinates: CoordType,
@@ -50,6 +51,7 @@ const Arena: React.FC = () => {
           board={board}
           whitePerspective={whitePerspective}
           whiteTurnToMove={whiteTurnToMove}
+          moveData={moveData}
         />
       </DndProvider>
       <button

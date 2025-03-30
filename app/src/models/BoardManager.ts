@@ -46,8 +46,9 @@ class BoardManager {
 
   updateBoard(
     board: Square[][], 
-    fromX: number, fromY: 
-    number, toX: number, 
+    fromX: number, 
+    fromY: number, 
+    toX: number, 
     toY: number
   ) {
 
@@ -72,11 +73,11 @@ class BoardManager {
               departedSquare || null,
               piece,
             );
-            if (!setPieceAttempt) return [board, false]; // Square is occupied by an opponent's own piece.
+            if (!setPieceAttempt) return board; // Square is occupied by an opponent's own piece.
           }
         }
       }
-      return [board, true] // All good!
+      return board // All good!
   }
 
   makeMove(
@@ -93,15 +94,27 @@ class BoardManager {
 
         console.log(this.isInCheck())
         
-        this.submitMove(fromNotation, toNotation)
+        const move = this.submitMove(fromNotation, toNotation)
+        console.log(move)
           
         const { x: toX, y: toY } = toCoordinates;
         const { x: fromX, y: fromY } = fromCoordinates;
 
-        return this.updateBoard(board, fromX, fromY, toX, toY)
+        return {
+          board: this.updateBoard(board, fromX, fromY, toX, toY),
+          moveData: {
+            from: move.from,
+            to: move.to
+          },
+          validMove: true
+        }
 
       } catch (err) {
-        return [board, false]; // ChessJS returned an InvalidMove exception.
+        return {
+          board,
+          moveData: null,
+          validMove: false
+        }; // ChessJS returned an InvalidMove exception.
       }
     }
 

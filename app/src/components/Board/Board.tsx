@@ -2,6 +2,7 @@ import React from "react";
 import Square from "../Square/Square";
 import { Square as SquareModel } from "../../models/Square";
 import { CoordType } from "../../common/types/CoordType";
+import type { IMoveData } from "../../store/store.types";
 import PieceMap from "../../data/piece-map";
 
 interface BoardProps {
@@ -16,6 +17,7 @@ interface BoardProps {
     fromNotation: string,
     toNotation: string
   ) => void;
+  moveData: IMoveData | null
 }
 
 const Board: React.FC<BoardProps> = ({
@@ -23,6 +25,7 @@ const Board: React.FC<BoardProps> = ({
   whitePerspective,
   handlePieceDrop,
   whiteTurnToMove,
+  moveData
 }) => {
   return (
     <div className="board__container flex centered">
@@ -88,6 +91,7 @@ const Board: React.FC<BoardProps> = ({
                     isPieceOnThisSquare && col.getPiece()?.color === "white"
                   }
                   coordinates={col.coordinates}
+                  moveData={moveData}
                 />
               );
             });

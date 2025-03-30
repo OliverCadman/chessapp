@@ -5,6 +5,7 @@ import { CoordType } from "../../common/types/CoordType";
 import { PieceData } from "../../common/types/PieceData";
 import { useDrop, DropTargetMonitor } from "react-dnd";
 import SquareOverlay from "../SquareOverlay/SquareOverlay";
+import type { IMoveData } from "../../store/store.types";
 
 interface SquareProps {
   isPieceOnThisSquare: boolean;
@@ -19,6 +20,7 @@ interface SquareProps {
   file?: string;
   rank?: string;
   notation: string;
+  moveData: IMoveData | null;
   handlePieceDrop: (
     toCoordinates: CoordType,
     fromCoordinates: CoordType,
@@ -42,7 +44,8 @@ const Square: React.FC<SquareProps> = ({
   whiteTurnToMove,
   file,
   rank,
-  notation
+  notation,
+  moveData
 }) => {
 
   const [{ isOver }, drop] = useDrop(() => ({
@@ -69,9 +72,13 @@ const Square: React.FC<SquareProps> = ({
     }
   }), [whiteTurnToMove]);
 
+  const shouldBeHighlighted = () => {
+   return moveData ? moveData.from === notation || moveData.to === notation : false
+  }
+
   return (
     <div
-      className={`square flex centered ${whitePerspective ? "flipped" : ""}`}
+      className={`square flex centered ${whitePerspective ? "flipped" : ""} ${shouldBeHighlighted() ? "highlighted": ""}`}
       ref={drop}
       draggable="false"
     >

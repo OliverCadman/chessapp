@@ -85,11 +85,17 @@ interface IActivePiece {
   coordinates: { [key: string]: number };
 }
 
+export interface IMoveData {
+  from: string,
+  to: string
+}
+
 export type ArenaState = {
   board: Board;
   whitePerspective: boolean;
   activePiece: IActivePiece | null;
   whiteTurnToMove: boolean;
+  moveData: IMoveData | null;
   setMove: (
     board: Square[][],
     toCoordinates: CoordType,

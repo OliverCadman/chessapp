@@ -12,6 +12,7 @@ const useArenaState = create<ArenaState>((set) => ({
   whitePerspective: true,
   whiteTurnToMove: true,
   activePiece: null,
+  moveData: null,
   setMove: (
     board: Square[][],
     toCoordinates: CoordType,
@@ -29,8 +30,9 @@ const useArenaState = create<ArenaState>((set) => ({
 
       return {
         ...state,
-        board: newBoard && newBoard[0],
-        whiteTurnToMove: newBoard && newBoard[1] ? !state.whiteTurnToMove : state.whiteTurnToMove
+        board: newBoard?.board,
+        whiteTurnToMove: newBoard && newBoard.validMove ? !state.whiteTurnToMove : state.whiteTurnToMove,
+        moveData: newBoard?.validMove ? newBoard.moveData : state.moveData
       }
   })
 }));
