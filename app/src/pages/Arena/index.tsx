@@ -2,20 +2,31 @@ import React from "react";
 import FullHeightContainer from "../../components/FullHeightContainer/FullHeightContainer";
 import Board from "../../components/Board/Board";
 import { CoordType } from "../../common/types/CoordType";
-import { DndProvider } from "react-dnd";
-import { HTML5Backend } from "react-dnd-html5-backend";
-import { TouchBackend } from "react-dnd-touch-backend";
-import mobileCheck from "../../utils/mobileDeviceCheck";
-
+import {
+  DndContext, 
+  PointerSensor,
+  useSensors,
+  useSensor,
+  MouseSensor, 
+  TouchSensor,
+  DragStartEvent
+} from "@dnd-kit/core";
+import { customSnapCenterToCursor } from "../../modifiers";
 import useArenaState from "../../store/arena";
 import { PieceColors } from "../../constants/PieceColors";
+import { PieceData } from "../../common/types/PieceData";
+
 
 const Arena: React.FC = () => {
   const board = useArenaState((state) => state.board);
   const whiteTurnToMove = useArenaState((state) => state.whiteTurnToMove)
   const whitePerspective = useArenaState((state) => state.whitePerspective)
   const setMove = useArenaState((state) => state.setMove)
-  const moveData = useArenaState((state) => state.moveData)
+  const setPerspective = useArenaState((state) => state.setPerspective)
+  const setActivePiece = useArenaState((state) => state.setActivePiece)
+  const moveData = useArenaState((state) => state.moveData);
+
+  console.log(board)
 
   const handlePieceDrop = (
     toCoordinates: CoordType,
@@ -25,11 +36,6 @@ const Arena: React.FC = () => {
     fromNotation: string,
     toNotation: string
   ) => {
-
-    console.group("Move info")
-    console.log(fromCoordinates, toCoordinates)
-    console.log(`From ${fromNotation} to ${toNotation}`)
-    console.groupEnd()
 
     if (color === PieceColors.BLACK && whiteTurnToMove || 
       color === PieceColors.WHITE && !whiteTurnToMove) return 
@@ -43,29 +49,49 @@ const Arena: React.FC = () => {
     )
   };
 
+  const handleDragStart = (event: DragStartEvent) => {
+
+    if (!event || !event.active.data.current) return;
+
+    const {
+      coordinates,
+      whiteTurnToMove,
+      pieceId,
+      pieceColor,
+      pieceName,
+      notation
+    } = event.active.data.current as PieceData;
+   
+    setActivePiece(
+      whiteTurnToMove,
+      pieceName,
+      pieceId,
+      pieceColor,
+      coordinates,
+      notation
+    )
+  }
+
+  const sensors = useSensors(
+    useSensor(MouseSensor),
+    useSensor(TouchSensor),
+    useSensor(PointerSensor)
+  )
+
   return (
     <FullHeightContainer extraClasses="flex centered column">
-      <DndProvider debugMode={true} backend={mobileCheck() ? TouchBackend : HTML5Backend}>
+
         <Board
           handlePieceDrop={handlePieceDrop}
           board={board}
           whitePerspective={whitePerspective}
           whiteTurnToMove={whiteTurnToMove}
-          moveData={moveData}
-        />
-      </DndProvider>
+          moveData={moveData}          />
       <button
         className="btn challenge-btn"
         style={{ marginTop: "1rem" }}
-        onClick={() => {
-          useArenaState.setState((prevState) => {
-            return {
-              ...prevState,
-              whitePerspective: !prevState.whitePerspective,
-            };
-          });
-        }}
-      >
+        onClick={() => setPerspective(board)}
+        >
         Toggle Perspective
       </button>
     </FullHeightContainer>

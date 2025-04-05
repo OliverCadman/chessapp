@@ -8,24 +8,29 @@
         background-color: $light-green-translucent;
     }
 
-
     .notation {
         margin: 0;
         font-family: $font-secondary;
         font-size: clamp(.4rem, 1vw, .65rem);
         position: absolute;
         font-weight: $fw-semibold;
-        color: $very-dark-grey;
-        transform: rotate(180deg);
+
+        &.brown-text {
+            color: $board-brown;
+        }
+
+        &.beige-text {
+            color: $board-beige;
+        }
 
         &.file {
-            top: 2px;
-            right: 2px;
+            bottom: 2px;
+            left: 2px;
         }
 
         &.rank {
-            bottom: 2px;
-            left: 2px;
+            top: 2px;
+            right: 2px;
         }
 
     }

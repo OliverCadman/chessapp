@@ -1,6 +1,6 @@
 import React from "react";
-import { useDrag } from "react-dnd";
-import PieceType from "./constants/PieceType";
+import { useDraggable } from "@dnd-kit/core";
+import {CSS} from "@dnd-kit/utilities"
 import { PieceData } from "../../common/types/PieceData";
 
 
@@ -14,6 +14,7 @@ interface IPiece {
   pieceColor: string;
   coordinates: { [key: string]: number };
   notation: string;
+  inCheck: boolean;
 }
 
 const Piece: React.FC<IPiece> = ({
@@ -25,40 +26,54 @@ const Piece: React.FC<IPiece> = ({
   pieceColor,
   coordinates,
   whiteTurnToMove,
-  notation
+  notation,
+  inCheck
 }) => {
 
-  const [{ isDragging }, dragRef] = useDrag(() => {
-    const data: PieceData = {
-      pieceId,
+  const { attributes, listeners, transform, setNodeRef } = useDraggable({
+    id: pieceId,
+    data: {
+      isWhite,
       pieceName,
-      coordinates,
+      pieceId,
       pieceColor,
-      whiteTurnToMove,
-      notation
-    };
-    return {
-      item: data,
-      type: PieceType.CHESSPIECE,
-      collect: (monitor) => {
-        return {
-          isDragging: !!monitor.isDragging(),
-          data: monitor.getItem(),
-        };
-      }
-    };
-  }, [pieceId]);
+      coordinates,
+      notation,
+      whiteTurnToMove
+    } as PieceData
+  })
+
+  // console.log(cursorOffset)
+
+  // let x, y, parent;
+  // activatorEvent && (
+  //   parent = activatorEvent.target.parentElement.getBoundingClientRect()
+  //   x = e.clientX - parentRect.left - draggable.offsetWidth / 2;
+  //   y = e.clientY - parentRect.top - draggable.offsetHeight / 2;
+  // )
+
+  // console.log(activatorEvent)
+  // console.log(transform)
+
+
+  const style = transform ? {
+  
+    transform: `translate(${transform.x}px, ${transform.y}px)`
+   } : undefined;
+  
+
 
   const colorIndex = isWhite ? 0 : 1;
   return pieceImgUrls ? (
-    <img
-      className="piece"
+      <img
+      className={`piece`}
+      style={style}
       src={pieceImgUrls[colorIndex]}
       alt={`${whitePerspective ? "White" : "Black"} ${pieceName}`}
-      tabIndex={0}
-      role="button"
-      ref={dragRef}
-      style={{ opacity: isDragging ? 0.5 : 1 }}
+      ref={setNodeRef}
+      {...attributes}
+      {...listeners}
+
     />
   ) : (
     ""

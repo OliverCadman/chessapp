@@ -4,6 +4,7 @@ import { Board } from "../models/Board";
 import { CoordType } from "../common/types/CoordType";
 import BoardManager from "../models/BoardManager";
 import Square from "../models/Square";
+import {cloneDeep} from "lodash";
 
 const boardManager = new BoardManager();
 
@@ -28,12 +29,44 @@ const useArenaState = create<ArenaState>((set) => ({
         toNotation
       )
 
+
       return {
         ...state,
         board: newBoard?.board,
         whiteTurnToMove: newBoard && newBoard.validMove ? !state.whiteTurnToMove : state.whiteTurnToMove,
         moveData: newBoard?.validMove ? newBoard.moveData : state.moveData
       }
+  }),
+  setActivePiece: (
+    whiteTurnToMove: boolean,
+    pieceName: string,
+    pieceId: string,
+    pieceColor: string,
+    coordinates: {[key: number]: number},
+    notation: string
+  ) => set((state) => ({
+    ...state,
+    activePiece: {
+      whiteTurnToMove,
+      pieceName,
+      pieceId,
+      pieceColor,
+      coordinates,
+      notation
+    }
+  })),
+  setPerspective: (
+    board: Square[][]
+  ) => set((state) => {
+    const boardCopy = cloneDeep(state.board);
+    const newBoard = boardManager.reverseBoard(boardCopy);
+    console.log(newBoard)
+
+    return {
+      ...state,
+      board: newBoard,
+      whitePerspective: !state.whitePerspective
+    }
   })
 }));
 

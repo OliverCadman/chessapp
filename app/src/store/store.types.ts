@@ -81,13 +81,18 @@ export type LobbyState = {
 
 interface IActivePiece {
   pieceId: string;
-  color: string;
   coordinates: { [key: string]: number };
+  whiteTurnToMove: boolean;
+  pieceName: string;
+  pieceColor: string;
+  notation: string;
 }
 
 export interface IMoveData {
   from: string,
   to: string
+  inCheck: boolean;
+  colorOfMovedPiece: string;
 }
 
 export type ArenaState = {
@@ -103,4 +108,15 @@ export type ArenaState = {
     fromNotation: string,
     toNotation: string
   ) => void
+  setActivePiece: (
+    whiteTurnToMove: boolean,
+    pieceName: string,
+    pieceId: string,
+    pieceColor: string,
+    coordinates: {[key: number]: number},
+    notation: string
+  ) => void;
+  setPerspective: (
+    board: Square[][]
+  ) => void;
 };

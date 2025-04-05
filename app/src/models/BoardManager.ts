@@ -91,8 +91,6 @@ class BoardManager {
       if (!board) return;
     
       try {
-
-        console.log(this.isInCheck())
         
         const move = this.submitMove(fromNotation, toNotation)
         console.log(move)
@@ -104,7 +102,9 @@ class BoardManager {
           board: this.updateBoard(board, fromX, fromY, toX, toY),
           moveData: {
             from: move.from,
-            to: move.to
+            to: move.to,
+            inCheck: this.isInCheck(),
+            colorOfMovedPiece: move.color
           },
           validMove: true
         }
@@ -117,6 +117,13 @@ class BoardManager {
         }; // ChessJS returned an InvalidMove exception.
       }
     }
+
+  reverseBoard(
+    board: Square[][]
+  ) {
+    
+    return board.slice().reverse().map(row => row.slice().reverse())
+  }
 
 }
 

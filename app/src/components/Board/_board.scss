@@ -9,9 +9,8 @@
     img.board {
         width: 100%;
         position: absolute;
-        top: 50%;
-        left: 0;
-        transform: translateY(-50%);
+        margin: 0;
+        inset: 0;
     }
 }
 
@@ -21,7 +20,7 @@
 }
 
 .square__container {
-    position: absolute;
+    // position: absolute;
     width: 100%;
     height: 100%;
     $num-ranks: 8;
@@ -33,13 +32,14 @@
 
 @include tablet-768() {
     .board__container {
+        width: 500px;
+        height: 500px;
+    }
+}
+
+@include desktop-1440() {
+    .board__container {
         width: 600px;
         height: 600px;
     }
 }
-
-// @include desktop-1440() {
-//     .board__container {
-//         width:
-//     }
-// }
