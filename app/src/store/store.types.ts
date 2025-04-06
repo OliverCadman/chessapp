@@ -92,7 +92,7 @@ export interface IMoveData {
   from: string,
   to: string
   inCheck: boolean;
-  colorOfMovedPiece: string;
+  pieceColor: string;
 }
 
 

@@ -7,3 +7,9 @@ export const CASTLE_DESTINATION_SQUARES = {
     G8: "g8",
     C8: "c8"
 }
+
+export const MOVE_FLAGS = {
+    KINGSIDE_CASTLE: "k",
+    QUEENSIDE_CASTLE: "q",
+    EN_PASSANT: "e"
+}

@@ -34,14 +34,12 @@ const useArenaState = create<ArenaState>((set) => ({
         toNotation
       )
 
-      console.log(newBoard)
-
-
       return {
         ...state,
         board: newBoard?.board,
         whiteTurnToMove: newBoard && newBoard.validMove ? !state.whiteTurnToMove : state.whiteTurnToMove,
-        moveData: newBoard?.validMove ? newBoard.moveData : state.moveData
+        moveData: newBoard?.validMove ? newBoard.moveData : state.moveData,
+        activeSquare: null
       }
   }),
   setActivePiece: (

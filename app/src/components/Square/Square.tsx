@@ -70,7 +70,7 @@ const Square: React.FC<SquareProps> = ({
 
   const inCheck = () =>  {
     return moveData && pieceId && pieceColor ? (
-      pieceId.includes("k") && pieceColor[0] !== moveData.colorOfMovedPiece && moveData.inCheck
+      pieceId.includes("k") && pieceColor[0] !== moveData.pieceColor && moveData.inCheck
     ) : false
   }
 

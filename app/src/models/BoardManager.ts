@@ -1,6 +1,11 @@
 import Square from "./Square";
 import { CoordType } from "../common/types/CoordType";
-import { RANK_LENGTH, FILE_LENGTH, CASTLE_DESTINATION_SQUARES } from "./constants";
+import { 
+  RANK_LENGTH, 
+  FILE_LENGTH, 
+  CASTLE_DESTINATION_SQUARES,
+  MOVE_FLAGS
+} from "./constants";
 
 import { Chess } from "chess.js";
 
@@ -135,6 +140,51 @@ class BoardManager {
 
   }
 
+  splitString(string: string, delimiter: string) {
+    return string.split(delimiter)
+  }
+
+  extractTakenSquare(san: string) {
+    return this.splitString(san, "x")[1]
+  }
+
+  findSquareByNotation(board: Square[][], notation: string) {
+    return board
+    .reduce((acc, curr) => acc.concat(curr), [])
+    .find((s) => s.notation === notation);
+  }
+
+  computeAttackedEPPiecePosition(san: string) {
+    /*
+      En passant can only occur when both opponent's
+      pawns are on the 5th rank. 
+
+      When a player takes a piece via en passant,
+      the SAN for this move is e.g. 'exf6'.
+
+      Therefore, we need to extract 'f4' and convert it to 
+      'f5', to then use to grab the coords of this piece.
+    */
+    const squareThatOpponentHasAttacked = this.extractTakenSquare(san);
+    const splitNotation = this.splitString(squareThatOpponentHasAttacked, "")
+
+    const file = splitNotation[0]
+    const rank = parseInt(splitNotation[1])
+
+    return `${file}${rank - 1}`
+  }
+
+  
+  performEnPassant(board: Square[][], moveSAN: string) {
+
+    const capturedSquareNotation = this.computeAttackedEPPiecePosition(moveSAN)
+    const capturedSquare =  this.findSquareByNotation(board, capturedSquareNotation);
+
+    if (!capturedSquare) return
+
+    capturedSquare.removePiece()
+  }
+
   makeMove(
       board: Square[][],
       toCoordinates: CoordType,
@@ -152,24 +202,34 @@ class BoardManager {
         const { x: toX, y: toY } = toCoordinates;
         const { x: fromX, y: fromY } = fromCoordinates;
        
-        if (["k", "q"].includes(move.flags)) {
+        if (
+          [MOVE_FLAGS.KINGSIDE_CASTLE, MOVE_FLAGS.QUEENSIDE_CASTLE]
+          .includes(move.flags)
+        ) {
           const newBoard = this.performCastle(board, move.to)
           return {
             board: this.updateBoard(newBoard, fromX, fromY, toX, toY),
             moveData: {
             from: move.from,
             to: move.to,
-            inCheck: this.isInCheck()
+            inCheck: this.isInCheck(),
+            pieceColor: move.color
           },
           validMove: true
           }
         }
+
+        if (move.flags === MOVE_FLAGS.EN_PASSANT) {
+          this.performEnPassant(board, move.san);
+        }
+
         return {
           board: this.updateBoard(board, fromX, fromY, toX, toY),
           moveData: {
             from: move.from,
             to: move.to,
-            inCheck: this.isInCheck()
+            inCheck: this.isInCheck(),
+            pieceColor: move.color
           },
           validMove: true
         }

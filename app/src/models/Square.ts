@@ -23,11 +23,19 @@ export class Square {
     return pieceOne.color !== pieceTwo.color;
   }
 
+  removePiece() {
+    this.pieceOnThisSquare = null;
+  }
+
+  placePiece(piece: Piece) {
+    this.pieceOnThisSquare = piece;
+  }
+
   setPiece(departedSquare: Square | null, piece: Piece) {
     if (this.pieceOnThisSquare) {
       if (this.isOpponentPiece(piece, this.pieceOnThisSquare)) {
-        this.pieceOnThisSquare = null
-        this.pieceOnThisSquare = piece;
+        this.removePiece()
+        this.placePiece(piece)
       } else return false;
     } else this.pieceOnThisSquare = piece;
 
