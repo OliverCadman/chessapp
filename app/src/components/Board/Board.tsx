@@ -4,18 +4,6 @@ import { Square as SquareModel } from "../../models/Square";
 import { CoordType } from "../../common/types/CoordType";
 import type { IMoveData } from "../../store/store.types";
 import PieceMap from "../../data/piece-map";
-import {snapCenterToCursor} from "@dnd-kit/modifiers";
-
-import {
-  DndContext, 
-  PointerSensor,
-  useSensors,
-  useSensor,
-  MouseSensor, 
-  TouchSensor,
-  DragStartEvent
-} from "@dnd-kit/core";
-
 
 interface BoardProps {
   board: SquareModel[][];
@@ -39,27 +27,6 @@ const Board: React.FC<BoardProps> = ({
   whiteTurnToMove,
   moveData
 }) => {
-
-    const sensors = useSensors(
-      useSensor(MouseSensor),
-      useSensor(TouchSensor),
-      useSensor(PointerSensor)
-    )
-
-    const handleDragStart = (event: DragStartEvent) => {
-    
-        if (!event || !event.active.data.current) return;
-
-       
-        // setActivePiece(
-        //   whiteTurnToMove,
-        //   pieceName,
-        //   pieceId,
-        //   pieceColor,
-        //   coordinates,
-        //   notation
-        // )
-      }
   
   return (
     <div className="board__container flex centered">
@@ -68,15 +35,11 @@ const Board: React.FC<BoardProps> = ({
         <div
           className={`square__container`}
         >
-          <DndContext
-            sensors={sensors}
-            onDragStart={handleDragStart}
-            modifiers={[snapCenterToCursor]}
-          >
           {board.map((row, outerIndex) => {
             return row.map((col, innerIndex) => {
               const isPieceOnThisSquare = Boolean(col.pieceOnThisSquare);
-              const splitNotation = col.notation.split("");
+              const notation = col.notation;
+              const splitNotation = notation.split("");
               const file = splitNotation[0];
               const rank = splitNotation[1];
           
@@ -101,6 +64,7 @@ const Board: React.FC<BoardProps> = ({
               return (
         
                   <Square
+                    key={notation}
                     fileNotationColorClass={fileNotationColorClass}
                     rankNotationColorClass={rankNotationColorClass}
                     file={
@@ -138,7 +102,6 @@ const Board: React.FC<BoardProps> = ({
               );
             });
           })}
-          </DndContext>
         </div>
       </div>
     </div>

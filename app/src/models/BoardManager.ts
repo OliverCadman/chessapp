@@ -1,6 +1,6 @@
 import Square from "./Square";
 import { CoordType } from "../common/types/CoordType";
-import { RANK_LENGTH, FILE_LENGTH } from "./constants";
+import { RANK_LENGTH, FILE_LENGTH, CASTLE_DESTINATION_SQUARES } from "./constants";
 
 import { Chess } from "chess.js";
 
@@ -80,6 +80,61 @@ class BoardManager {
       return board // All good!
   }
 
+  performCastle(
+    board: Square[][],
+    toNotation: string,
+  ) {
+
+    console.log("castling...")
+
+    let fromX,
+        fromY,
+        toX,
+        toY
+
+    switch (toNotation) {
+      case CASTLE_DESTINATION_SQUARES.G1: {
+        fromX = 7;
+        fromY = 0;
+        toX = 5;
+        toY = 0;
+      };
+      break;
+      case CASTLE_DESTINATION_SQUARES.C1: {
+        fromX = 0;
+        fromY = 0;
+        toX = 3;
+        toY = 0;
+      };
+      break;
+      case CASTLE_DESTINATION_SQUARES.G8: {
+        fromX = 7;
+        fromY = 7;
+        toX = 5;
+        toY = 7;
+      }
+      break;
+      case CASTLE_DESTINATION_SQUARES.C8: {
+        fromX = 0;
+        fromY = 7;
+        toX = 3;
+        toY = 7;
+      }
+      break;
+      default:
+        break;
+    }
+    if ( // Truthiness won't work since some values are zero.
+      typeof fromX === "number" &&
+      typeof fromY === "number" &&
+      typeof toX === "number" &&
+      typeof toY === "number"
+    ) {
+      return this.updateBoard(board, fromX, fromY, toX, toY)
+    } else return board;
+
+  }
+
   makeMove(
       board: Square[][],
       toCoordinates: CoordType,
@@ -93,18 +148,28 @@ class BoardManager {
       try {
         
         const move = this.submitMove(fromNotation, toNotation)
-        console.log(move)
-          
+
         const { x: toX, y: toY } = toCoordinates;
         const { x: fromX, y: fromY } = fromCoordinates;
-
+       
+        if (["k", "q"].includes(move.flags)) {
+          const newBoard = this.performCastle(board, move.to)
+          return {
+            board: this.updateBoard(newBoard, fromX, fromY, toX, toY),
+            moveData: {
+            from: move.from,
+            to: move.to,
+            inCheck: this.isInCheck()
+          },
+          validMove: true
+          }
+        }
         return {
           board: this.updateBoard(board, fromX, fromY, toX, toY),
           moveData: {
             from: move.from,
             to: move.to,
-            inCheck: this.isInCheck(),
-            colorOfMovedPiece: move.color
+            inCheck: this.isInCheck()
           },
           validMove: true
         }
@@ -118,10 +183,9 @@ class BoardManager {
       }
     }
 
-  reverseBoard(
+  rotateBoard(
     board: Square[][]
   ) {
-    
     return board.slice().reverse().map(row => row.slice().reverse())
   }
 

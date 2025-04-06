@@ -9,24 +9,25 @@ import {
   useSensor,
   MouseSensor, 
   TouchSensor,
-  DragStartEvent
+  closestCenter
 } from "@dnd-kit/core";
-import { customSnapCenterToCursor } from "../../modifiers";
+import type { DragStartEvent, DragEndEvent, DragOverEvent } from "@dnd-kit/core";
+import {snapCenterToCursor} from "@dnd-kit/modifiers";
 import useArenaState from "../../store/arena";
 import { PieceColors } from "../../constants/PieceColors";
 import { PieceData } from "../../common/types/PieceData";
+import { SquareData } from "../../common/types/SquareData";
 
 
 const Arena: React.FC = () => {
   const board = useArenaState((state) => state.board);
-  const whiteTurnToMove = useArenaState((state) => state.whiteTurnToMove)
-  const whitePerspective = useArenaState((state) => state.whitePerspective)
-  const setMove = useArenaState((state) => state.setMove)
-  const setPerspective = useArenaState((state) => state.setPerspective)
-  const setActivePiece = useArenaState((state) => state.setActivePiece)
+  const whiteTurnToMove = useArenaState((state) => state.whiteTurnToMove);
+  const whitePerspective = useArenaState((state) => state.whitePerspective);
+  const setMove = useArenaState((state) => state.setMove);
+  const setPerspective = useArenaState((state) => state.setPerspective);
+  const setActivePiece = useArenaState((state) => state.setActivePiece);
   const moveData = useArenaState((state) => state.moveData);
-
-  console.log(board)
+  const setActiveSquare = useArenaState((state) => state.setActiveSquare);
 
   const handlePieceDrop = (
     toCoordinates: CoordType,
@@ -72,6 +73,39 @@ const Arena: React.FC = () => {
     )
   }
 
+  const handleDragEnd = (event: DragEndEvent) => {
+    const {
+      fromCoordinates,
+      whiteTurnToMove,
+      pieceId,
+      pieceColor,
+      pieceName,
+      fromNotation
+    } = event.active.data.current as PieceData;
+
+    const {toCoordinates, toNotation} = event.over?.data.current as SquareData;
+
+    setMove(
+      board,
+      toCoordinates,
+      fromCoordinates,
+      fromNotation,
+      toNotation
+    )
+  }
+
+  const handleDragOver = (event: DragOverEvent) => {
+    const {active, over} = event;
+
+    const {id: fromId} = active;
+    const {toNotation: toId} = over?.data.current as SquareData;
+
+    if (fromId === toId) return;
+
+    setActiveSquare(toId);
+
+  }
+
   const sensors = useSensors(
     useSensor(MouseSensor),
     useSensor(TouchSensor),
@@ -80,13 +114,22 @@ const Arena: React.FC = () => {
 
   return (
     <FullHeightContainer extraClasses="flex centered column">
-
+      <DndContext
+        sensors={sensors}
+        onDragStart={handleDragStart}
+        onDragEnd={handleDragEnd}
+        onDragOver={handleDragOver}
+        modifiers={[snapCenterToCursor]}
+        collisionDetection={closestCenter}
+      >
         <Board
           handlePieceDrop={handlePieceDrop}
           board={board}
           whitePerspective={whitePerspective}
           whiteTurnToMove={whiteTurnToMove}
-          moveData={moveData}          />
+          moveData={moveData}          
+          />
+      </DndContext>
       <button
         className="btn challenge-btn"
         style={{ marginTop: "1rem" }}

@@ -95,12 +95,15 @@ export interface IMoveData {
   colorOfMovedPiece: string;
 }
 
+
 export type ArenaState = {
   board: Board;
   whitePerspective: boolean;
   activePiece: IActivePiece | null;
   whiteTurnToMove: boolean;
   moveData: IMoveData | null;
+  activeSquare: string | null;
+  setActiveSquare: (notation: string) => void;
   setMove: (
     board: Square[][],
     toCoordinates: CoordType,

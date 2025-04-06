@@ -1,12 +1,13 @@
 import React from "react";
 import Piece from "../Piece/Piece";
-import PieceType from "../Piece/constants/PieceType";
 import { CoordType } from "../../common/types/CoordType";
 import { PieceData } from "../../common/types/PieceData";
-
-
+import { useDroppable } from "@dnd-kit/core";
 import SquareOverlay from "../SquareOverlay/SquareOverlay";
 import type { IMoveData } from "../../store/store.types";
+import { SquareData } from "../../common/types/SquareData";
+
+import useArenaState from "../../store/arena";
 
 interface SquareProps {
   isPieceOnThisSquare: boolean;
@@ -53,6 +54,16 @@ const Square: React.FC<SquareProps> = ({
   rankNotationColorClass
 }) => {
 
+  const {setNodeRef} = useDroppable({
+    id: notation,
+    data: {
+      toCoordinates: coordinates,
+      toNotation: notation
+    } as SquareData
+  })
+
+  const activeSquare = useArenaState((state) => state.activeSquare);
+
   const shouldBeHighlighted = () => {
    return moveData ? moveData.from === notation || moveData.to === notation : false
   }
@@ -65,6 +76,7 @@ const Square: React.FC<SquareProps> = ({
 
   return (
     <div
+      ref={setNodeRef}
       className={`
         square flex centered ${whitePerspective ? "flipped" : ""} 
         ${shouldBeHighlighted() ? "highlighted": ""}`}
@@ -99,7 +111,7 @@ const Square: React.FC<SquareProps> = ({
 
         />
       )}
-      {/* {isOver && !isPieceOnThisSquare && <SquareOverlay />} */}
+      {activeSquare === notation && !isPieceOnThisSquare && <SquareOverlay />}
     </div>
   );
 };

@@ -37,34 +37,20 @@ const Piece: React.FC<IPiece> = ({
       pieceName,
       pieceId,
       pieceColor,
-      coordinates,
-      notation,
+      fromCoordinates: coordinates,
+      fromNotation: notation,
       whiteTurnToMove
     } as PieceData
   })
 
-  // console.log(cursorOffset)
-
-  // let x, y, parent;
-  // activatorEvent && (
-  //   parent = activatorEvent.target.parentElement.getBoundingClientRect()
-  //   x = e.clientX - parentRect.left - draggable.offsetWidth / 2;
-  //   y = e.clientY - parentRect.top - draggable.offsetHeight / 2;
-  // )
-
-  // console.log(activatorEvent)
-  // console.log(transform)
-
-
   const style = transform ? {
-  
     transform: `translate(${transform.x}px, ${transform.y}px)`
    } : undefined;
-  
-
 
   const colorIndex = isWhite ? 0 : 1;
+
   return pieceImgUrls ? (
+    <div className={`piece__wrapper ${inCheck ? "danger" : ""}`}>
       <img
       className={`piece`}
       style={style}
@@ -73,8 +59,8 @@ const Piece: React.FC<IPiece> = ({
       ref={setNodeRef}
       {...attributes}
       {...listeners}
-
     />
+    </div>
   ) : (
     ""
   );

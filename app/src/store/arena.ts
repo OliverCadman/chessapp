@@ -14,6 +14,11 @@ const useArenaState = create<ArenaState>((set) => ({
   whiteTurnToMove: true,
   activePiece: null,
   moveData: null,
+  activeSquare: null,
+  setActiveSquare: (notation: string) => set((state) => ({
+    ...state,
+    activeSquare: notation
+  })),
   setMove: (
     board: Square[][],
     toCoordinates: CoordType,
@@ -28,6 +33,8 @@ const useArenaState = create<ArenaState>((set) => ({
         fromNotation,
         toNotation
       )
+
+      console.log(newBoard)
 
 
       return {
@@ -55,12 +62,9 @@ const useArenaState = create<ArenaState>((set) => ({
       notation
     }
   })),
-  setPerspective: (
-    board: Square[][]
-  ) => set((state) => {
+  setPerspective: () => set((state) => {
     const boardCopy = cloneDeep(state.board);
-    const newBoard = boardManager.reverseBoard(boardCopy);
-    console.log(newBoard)
+    const newBoard = boardManager.rotateBoard(boardCopy);
 
     return {
       ...state,

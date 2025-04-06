@@ -4,7 +4,7 @@ export interface PieceData {
   pieceId: string;
   pieceName: string;
   pieceColor: string;
-  coordinates: CoordType;
+  fromCoordinates: CoordType;
   whiteTurnToMove: boolean;
-  notation: string;
+  fromNotation: string;
 }
