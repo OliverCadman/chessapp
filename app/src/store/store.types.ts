@@ -106,6 +106,7 @@ export type ArenaState = {
   setActiveSquare: (notation: string) => void;
   setMove: (
     board: Square[][],
+    pieceId: string,
     toCoordinates: CoordType,
     fromCoordinates: CoordType,
     fromNotation: string,

@@ -1,5 +1,6 @@
 import { CoordType } from "./CoordType";
 
+
 export interface PieceData {
   pieceId: string;
   pieceName: string;

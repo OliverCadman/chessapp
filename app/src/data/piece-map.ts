@@ -1,4 +1,4 @@
-export type PieceMapType = {
+export interface PieceMapType {
   [key: string]: string[];
 };
 

@@ -20,7 +20,6 @@
 }
 
 .square__container {
-    // position: absolute;
     width: 100%;
     height: 100%;
     $num-ranks: 8;
@@ -37,9 +36,9 @@
     }
 }
 
-@include desktop-1440() {
-    .board__container {
-        width: 600px;
-        height: 600px;
-    }
-}
+// @include desktop-1440() {
+//     .board__container {
+//         width: 600px;
+//         height: 600px;
+//     }
+// }

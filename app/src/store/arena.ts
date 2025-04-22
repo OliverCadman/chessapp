@@ -21,13 +21,16 @@ const useArenaState = create<ArenaState>((set) => ({
   })),
   setMove: (
     board: Square[][],
+    pieceId: string,
     toCoordinates: CoordType,
     fromCoordinates: CoordType,
     fromNotation: string,
-    toNotation: string
+    toNotation: string,
+
   )  => set((state) => {
       const newBoard = boardManager.makeMove(
         board,
+        pieceId,
         toCoordinates,
         fromCoordinates,
         fromNotation,
@@ -39,7 +42,8 @@ const useArenaState = create<ArenaState>((set) => ({
         board: newBoard?.board,
         whiteTurnToMove: newBoard && newBoard.validMove ? !state.whiteTurnToMove : state.whiteTurnToMove,
         moveData: newBoard?.validMove ? newBoard.moveData : state.moveData,
-        activeSquare: null
+        activeSquare: null,
+        activePiece: null
       }
   }),
   setActivePiece: (

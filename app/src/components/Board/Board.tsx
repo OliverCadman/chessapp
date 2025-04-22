@@ -1,9 +1,10 @@
-import React from "react";
+import React, {useEffect, useRef, useState} from "react";
 import Square from "../Square/Square";
 import { Square as SquareModel } from "../../models/Square";
 import { CoordType } from "../../common/types/CoordType";
 import type { IMoveData } from "../../store/store.types";
 import PieceMap from "../../data/piece-map";
+import PiecePromotionBanner from "../PiecePromotionBanner/PiecePromotionBanner";
 
 interface BoardProps {
   board: SquareModel[][];
@@ -27,6 +28,20 @@ const Board: React.FC<BoardProps> = ({
   whiteTurnToMove,
   moveData
 }) => {
+
+  const boardRef = useRef<HTMLDivElement>(null);
+  const [bannerWidth, setBannerWidth] = useState<number>(0)
+
+  useEffect(() => {
+    if (!boardRef.current) return;
+
+    const square = boardRef.current.children[1];
+    const PROMOTION_OPTION_NUMBER = 4;
+    const rect = square?.getBoundingClientRect();
+
+    const squareWidth = rect.width;
+    setBannerWidth(squareWidth * PROMOTION_OPTION_NUMBER)
+  }, [board])
   
   return (
     <div className="board__container flex centered">
@@ -34,7 +49,9 @@ const Board: React.FC<BoardProps> = ({
         <img src="/assets/images/board/brown.png" className="board" />
         <div
           className={`square__container`}
+          ref={boardRef}
         >
+          {/* <PiecePromotionBanner color="white" bannerWidth={bannerWidth}/> */}
           {board.map((row, outerIndex) => {
             return row.map((col, innerIndex) => {
               const isPieceOnThisSquare = Boolean(col.pieceOnThisSquare);

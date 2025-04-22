@@ -1,3 +1,4 @@
+import { PieceColors } from "../constants/PieceColors";
 import Piece from "./Piece";
 
 interface ICoords {
@@ -29,6 +30,19 @@ export class Square {
 
   placePiece(piece: Piece) {
     this.pieceOnThisSquare = piece;
+  }
+
+  pawnReachedPromotionSquare() {
+    const rankNumber = this.notation.split("")[1]
+    return (
+     (
+      this.pieceOnThisSquare?.color === PieceColors.WHITE
+      && rankNumber === "8") ||
+      (
+        this.pieceOnThisSquare?.color === PieceColors.BLACK
+        && rankNumber === "1"
+      )
+    )
   }
 
   setPiece(departedSquare: Square | null, piece: Piece) {

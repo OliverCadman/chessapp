@@ -25,6 +25,7 @@ const Arena: React.FC = () => {
   const whitePerspective = useArenaState((state) => state.whitePerspective);
   const setMove = useArenaState((state) => state.setMove);
   const setPerspective = useArenaState((state) => state.setPerspective);
+  const activePiece = useArenaState((state) => state.activePiece);
   const setActivePiece = useArenaState((state) => state.setActivePiece);
   const moveData = useArenaState((state) => state.moveData);
   const setActiveSquare = useArenaState((state) => state.setActiveSquare);
@@ -55,7 +56,7 @@ const Arena: React.FC = () => {
     if (!event || !event.active.data.current) return;
 
     const {
-      coordinates,
+      fromCoordinates: coordinates,
       whiteTurnToMove,
       pieceId,
       pieceColor,
@@ -87,6 +88,7 @@ const Arena: React.FC = () => {
 
     setMove(
       board,
+      pieceId,
       toCoordinates,
       fromCoordinates,
       fromNotation,

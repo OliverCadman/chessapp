@@ -10,7 +10,6 @@ import {
 import { Chess } from "chess.js";
 
 
-
 class BoardManager {
 
   chess: Chess
@@ -43,6 +42,10 @@ class BoardManager {
 
   private submitMove(from: string, to: string) {
     return this.chess.move({from, to})
+  }
+
+  private submitPromotion(from: string, to: string, promotion: string) {
+    return this.chess.move({from, to, promotion})
   }
 
   private isInCheck() {
@@ -140,6 +143,8 @@ class BoardManager {
 
   }
 
+
+
   splitString(string: string, delimiter: string) {
     return string.split(delimiter)
   }
@@ -185,8 +190,18 @@ class BoardManager {
     capturedSquare.removePiece()
   }
 
+  isPromotion(y: number, pieceId: string) {
+    const pieceColor = this.splitString(pieceId, "")[0]
+
+    return (
+      y === 7 && pieceColor === "w" ||
+      y === 0 && pieceColor === "b"
+    )
+  }
+
   makeMove(
       board: Square[][],
+      pieceId: string,
       toCoordinates: CoordType,
       fromCoordinates: CoordType,
       fromNotation: string,
@@ -194,13 +209,38 @@ class BoardManager {
     ) {
   
       if (!board) return;
+
+      const { x: toX, y: toY } = toCoordinates;
+      const { x: fromX, y: fromY } = fromCoordinates;
     
       try {
-        
-        const move = this.submitMove(fromNotation, toNotation)
 
-        const { x: toX, y: toY } = toCoordinates;
-        const { x: fromX, y: fromY } = fromCoordinates;
+        if (this.isPromotion(toY, pieceId)) {
+          /**
+           * ChessJS does not accept promotion
+           * moves unless the promotion piece is added 
+           * to the 'move' method, which makes sense.
+           * 
+           * Need to add alternative to 'submitMove' method
+           * to allow for promoting pawns.
+           * 
+           * TODO: Replace hardcoded "q" string with user's choice from client side.
+           */
+          const move = this.submitPromotion(fromNotation, toNotation, "q")
+
+          return {
+            board: this.updateBoard(board, fromX, fromY, toX, toY),
+            moveData: {
+              from: move.from,
+              to: move.to,
+              inCheck: this.isInCheck(),
+              pieceColor: move.color
+            },
+            validMove: true
+          }
+        }
+ 
+        const move = this.submitMove(fromNotation, toNotation)
        
         if (
           [MOVE_FLAGS.KINGSIDE_CASTLE, MOVE_FLAGS.QUEENSIDE_CASTLE]
@@ -223,6 +263,7 @@ class BoardManager {
           this.performEnPassant(board, move.san);
         }
 
+
         return {
           board: this.updateBoard(board, fromX, fromY, toX, toY),
           moveData: {
@@ -235,6 +276,7 @@ class BoardManager {
         }
 
       } catch (err) {
+        console.log(err)
         return {
           board,
           moveData: null,

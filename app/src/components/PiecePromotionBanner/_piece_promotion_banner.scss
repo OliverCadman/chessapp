@@ -1,0 +1,17 @@
+@use "../../common/styles/variables" as *;
+
+.piece_promotion_banner__container {
+    position: absolute;
+    left: 0;
+    z-index: 2;
+    background-color: $dusk;
+
+
+    img {
+        width: 100%;
+    }
+
+    .piece_image__wrapper {
+        height: 100%;
+    }
+}

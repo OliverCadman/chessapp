@@ -1,7 +1,7 @@
 import React from "react";
 import { useDraggable } from "@dnd-kit/core";
-import {CSS} from "@dnd-kit/utilities"
 import { PieceData } from "../../common/types/PieceData";
+import useArenaState from "../../store/arena";
 
 
 interface IPiece {
@@ -30,6 +30,8 @@ const Piece: React.FC<IPiece> = ({
   inCheck
 }) => {
 
+  const activePiece = useArenaState((state) => state.activePiece);
+
   const { attributes, listeners, transform, setNodeRef } = useDraggable({
     id: pieceId,
     data: {
@@ -52,7 +54,7 @@ const Piece: React.FC<IPiece> = ({
   return pieceImgUrls ? (
     <div className={`piece__wrapper ${inCheck ? "danger" : ""}`}>
       <img
-      className={`piece`}
+      className={`piece ${activePiece?.coordinates === coordinates ? "active" : ""}`}
       style={style}
       src={pieceImgUrls[colorIndex]}
       alt={`${whitePerspective ? "White" : "Black"} ${pieceName}`}
