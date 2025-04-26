@@ -4,13 +4,13 @@ import PieceMap from '../../data/piece-map';
 
 interface PiecePromotionBannerProps {
     color: string;
-    bannerWidth: number;
+    bannerRect: {[key: string]: number}
 }
 
 const PiecePromotionBanner: React.FC<PiecePromotionBannerProps> = 
 ({
     color,
-    bannerWidth
+    bannerRect
 }) => {
   const colorIndex: number = color === PieceColors.WHITE ? 0 : 1;
   const {
@@ -25,11 +25,13 @@ const PiecePromotionBanner: React.FC<PiecePromotionBannerProps> =
   ].map(images => images[colorIndex])
 
   return (
-    <div className="piece_promotion_banner__container" style={{width: bannerWidth, height: bannerWidth / 4}}>
+    <div className="piece_promotion_banner__container" 
+    style={{width: bannerRect.width, height: bannerRect.width / 4, left: bannerRect.left}}
+    >
             <div className="piece_image__wrapper flex">
                 {
-                    pieceImgArray.map(imgUrl => {
-                        return <div className="square flex centered">
+                    pieceImgArray.map((imgUrl, idx) => {
+                        return <div className="square flex centered" key={idx}>
                           <img src={imgUrl} className="w-100" />
                         </div>
                     })

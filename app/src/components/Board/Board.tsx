@@ -1,8 +1,9 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, {useEffect, useState, useRef} from "react";
+import type { SetStateAction } from "react";
 import Square from "../Square/Square";
 import { Square as SquareModel } from "../../models/Square";
-import { CoordType } from "../../common/types/CoordType";
 import type { IMoveData } from "../../store/store.types";
+import type { IPromotionData } from "../../store/store.types";
 import PieceMap from "../../data/piece-map";
 import PiecePromotionBanner from "../PiecePromotionBanner/PiecePromotionBanner";
 
@@ -10,38 +11,28 @@ interface BoardProps {
   board: SquareModel[][];
   whitePerspective: boolean;
   whiteTurnToMove: boolean;
-  handlePieceDrop: (
-    toCoordinates: CoordType,
-    fromCoordinates: CoordType,
-    color: string,
-    whiteTurnToMove: boolean,
-    fromNotation: string,
-    toNotation: string
-  ) => void;
-  moveData: IMoveData | null
+  moveData: IMoveData | null;
+  promotionData: IPromotionData | null;
+  onRefReady: React.Dispatch<SetStateAction<HTMLDivElement | undefined>>
 }
 
 const Board: React.FC<BoardProps> = ({
   board,
   whitePerspective,
-  handlePieceDrop,
   whiteTurnToMove,
-  moveData
+  moveData,
+  promotionData,
+  onRefReady
 }) => {
 
   const boardRef = useRef<HTMLDivElement>(null);
-  const [bannerWidth, setBannerWidth] = useState<number>(0)
 
   useEffect(() => {
     if (!boardRef.current) return;
 
-    const square = boardRef.current.children[1];
-    const PROMOTION_OPTION_NUMBER = 4;
-    const rect = square?.getBoundingClientRect();
+    onRefReady(boardRef.current);
+  }, [boardRef])
 
-    const squareWidth = rect.width;
-    setBannerWidth(squareWidth * PROMOTION_OPTION_NUMBER)
-  }, [board])
   
   return (
     <div className="board__container flex centered">
@@ -51,7 +42,7 @@ const Board: React.FC<BoardProps> = ({
           className={`square__container`}
           ref={boardRef}
         >
-          {/* <PiecePromotionBanner color="white" bannerWidth={bannerWidth}/> */}
+          {promotionData && <PiecePromotionBanner color="white" bannerRect={promotionData.bannerRect} />}
           {board.map((row, outerIndex) => {
             return row.map((col, innerIndex) => {
               const isPieceOnThisSquare = Boolean(col.pieceOnThisSquare);
@@ -93,7 +84,6 @@ const Board: React.FC<BoardProps> = ({
                     notation={col.notation}
                     whiteTurnToMove={whiteTurnToMove}
                     isPieceOnThisSquare={isPieceOnThisSquare}
-                    handlePieceDrop={handlePieceDrop}
                     pieceImgUrls={
                       col.pieceOnThisSquare &&
                       PieceMap[col.pieceOnThisSquare.pieceName]

@@ -15,6 +15,11 @@ const useArenaState = create<ArenaState>((set) => ({
   activePiece: null,
   moveData: null,
   activeSquare: null,
+  promotionData: null,
+  bannerRect: {
+    x: 0,
+    left: 0
+  },
   setActiveSquare: (notation: string) => set((state) => ({
     ...state,
     activeSquare: notation
@@ -45,6 +50,38 @@ const useArenaState = create<ArenaState>((set) => ({
         activeSquare: null,
         activePiece: null
       }
+  }),
+  setPromotionData: (
+    pieceId: string,
+    pieceColor: string,
+    squareCoords: {[key: string]: number},
+    promotionSelection: string | null,
+    promotionBannerWidth: number
+  ) => set((state) => {
+
+    const x = squareCoords.x;
+    let left;
+
+    if (x > 0 && x <= 4) {
+      left = x * promotionBannerWidth / 4;
+    } else if (x > 4) {
+      left = promotionBannerWidth
+    } else {
+      left = 0
+    } 
+    return {
+    ...state,
+    promotionData: {
+      pieceId,
+      pieceColor,
+      squareCoords,
+      promotionSelection,
+      bannerRect: {
+        width: promotionBannerWidth,
+        left
+      }
+    }
+  }
   }),
   setActivePiece: (
     whiteTurnToMove: boolean,

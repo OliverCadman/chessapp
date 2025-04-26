@@ -1,7 +1,6 @@
 import React from "react";
 import Piece from "../Piece/Piece";
 import { CoordType } from "../../common/types/CoordType";
-import { PieceData } from "../../common/types/PieceData";
 import { useDroppable } from "@dnd-kit/core";
 import SquareOverlay from "../SquareOverlay/SquareOverlay";
 import type { IMoveData } from "../../store/store.types";
@@ -23,14 +22,6 @@ interface SquareProps {
   rank?: string;
   notation: string;
   moveData: IMoveData | null;
-  handlePieceDrop: (
-    toCoordinates: CoordType,
-    fromCoordinates: CoordType,
-    color: string,
-    whiteTurnToMove: boolean,
-    fromNotation: string,
-    toNotation: string
-  ) => void;
   fileNotationColorClass: string | null;
   rankNotationColorClass: string | null;
 }
@@ -44,7 +35,6 @@ const Square: React.FC<SquareProps> = ({
   pieceId,
   pieceColor,
   coordinates,
-  handlePieceDrop,
   whiteTurnToMove,
   file,
   rank,

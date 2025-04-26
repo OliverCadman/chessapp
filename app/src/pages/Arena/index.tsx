@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 import FullHeightContainer from "../../components/FullHeightContainer/FullHeightContainer";
 import Board from "../../components/Board/Board";
 import { CoordType } from "../../common/types/CoordType";
@@ -25,75 +25,50 @@ const Arena: React.FC = () => {
   const whitePerspective = useArenaState((state) => state.whitePerspective);
   const setMove = useArenaState((state) => state.setMove);
   const setPerspective = useArenaState((state) => state.setPerspective);
-  const activePiece = useArenaState((state) => state.activePiece);
-  const setActivePiece = useArenaState((state) => state.setActivePiece);
+  const promotionData = useArenaState((state) => state.promotionData);
+  const setPromotionData = useArenaState((state) => state.setPromotionData);
   const moveData = useArenaState((state) => state.moveData);
   const setActiveSquare = useArenaState((state) => state.setActiveSquare);
 
-  const handlePieceDrop = (
-    toCoordinates: CoordType,
-    fromCoordinates: CoordType,
-    color: string,
-    whiteTurnToMove: boolean,
-    fromNotation: string,
-    toNotation: string
-  ) => {
+  const [childRef, setChildRef] = useState<HTMLDivElement>();
+  const [promotionBannerWidth, setPromotionBannerWidth] = useState<number>(0);
 
-    if (color === PieceColors.BLACK && whiteTurnToMove || 
-      color === PieceColors.WHITE && !whiteTurnToMove) return 
-    
-    setMove(
-      board,
-      toCoordinates,
-      fromCoordinates,
-      fromNotation,
-      toNotation
-    )
-  };
+  useEffect(() => {
+    if (!childRef) return;
+    const square = childRef.children[1];
+    const PROMOTION_OPTION_NUMBER = 4;
+    const rect = square?.getBoundingClientRect();
+    const squareWidth = rect.width;
+    setPromotionBannerWidth(squareWidth * PROMOTION_OPTION_NUMBER);
 
-  const handleDragStart = (event: DragStartEvent) => {
-
-    if (!event || !event.active.data.current) return;
-
-    const {
-      fromCoordinates: coordinates,
-      whiteTurnToMove,
-      pieceId,
-      pieceColor,
-      pieceName,
-      notation
-    } = event.active.data.current as PieceData;
-   
-    setActivePiece(
-      whiteTurnToMove,
-      pieceName,
-      pieceId,
-      pieceColor,
-      coordinates,
-      notation
-    )
-  }
+  }, [childRef]);
 
   const handleDragEnd = (event: DragEndEvent) => {
     const {
       fromCoordinates,
-      whiteTurnToMove,
       pieceId,
       pieceColor,
-      pieceName,
       fromNotation
     } = event.active.data.current as PieceData;
 
     const {toCoordinates, toNotation} = event.over?.data.current as SquareData;
 
-    setMove(
-      board,
-      pieceId,
-      toCoordinates,
-      fromCoordinates,
-      fromNotation,
-      toNotation
-    )
+    const rank = parseInt(toNotation.split("")[1])
+    if (
+      (pieceColor === PieceColors.WHITE && rank === 8) || 
+      (pieceColor === PieceColors.BLACK && rank === 1)
+    ) {
+      setPromotionData(pieceId, pieceColor, toCoordinates, null, promotionBannerWidth);
+    } else {
+        setMove(
+          board,
+          pieceId,
+          toCoordinates,
+          fromCoordinates,
+          fromNotation,
+          toNotation
+        )
+    }
   }
 
   const handleDragOver = (event: DragOverEvent) => {
@@ -118,14 +93,15 @@ const Arena: React.FC = () => {
     <FullHeightContainer extraClasses="flex centered column">
       <DndContext
         sensors={sensors}
-        onDragStart={handleDragStart}
+        // onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
         onDragOver={handleDragOver}
         modifiers={[snapCenterToCursor]}
         collisionDetection={closestCenter}
       >
         <Board
-          handlePieceDrop={handlePieceDrop}
+          onRefReady={setChildRef}
+          promotionData={promotionData}
           board={board}
           whitePerspective={whitePerspective}
           whiteTurnToMove={whiteTurnToMove}
