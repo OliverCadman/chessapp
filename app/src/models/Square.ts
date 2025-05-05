@@ -7,12 +7,12 @@ interface ICoords {
 
 export class Square {
   coordinates: ICoords;
-  notation: string;
+  notation: string | null;
   pieceOnThisSquare: Piece | null;
 
   constructor(
     coordinates: ICoords,
-    notation: string,
+    notation: string | null,
     pieceOnThisSquare: Piece | null,
   ) {
     this.coordinates = coordinates;
@@ -33,6 +33,8 @@ export class Square {
   }
 
   pawnReachedPromotionSquare() {
+    if (!this.notation) return;
+    
     const rankNumber = this.notation.split("")[1]
     return (
      (
@@ -45,7 +47,7 @@ export class Square {
     )
   }
 
-  setPiece(departedSquare: Square | null, piece: Piece) {
+  setPiece(departedSquare: Square | null, piece: Piece, isPromotion: boolean) {
     if (this.pieceOnThisSquare) {
       if (this.isOpponentPiece(piece, this.pieceOnThisSquare)) {
         this.removePiece()
@@ -55,7 +57,7 @@ export class Square {
 
     if (
       departedSquare?.pieceOnThisSquare &&
-      departedSquare.pieceOnThisSquare === piece
+      (departedSquare.pieceOnThisSquare === piece|| isPromotion)
     ) {
       departedSquare.pieceOnThisSquare = null;
     }

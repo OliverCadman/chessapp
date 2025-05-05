@@ -4,13 +4,17 @@ import PieceMap from '../../data/piece-map';
 
 interface PiecePromotionBannerProps {
     color: string;
-    bannerRect: {[key: string]: number}
+    bannerRect: {[key: string]: number};
+    handleClick: (
+      piece: string
+    ) => void;
 }
 
 const PiecePromotionBanner: React.FC<PiecePromotionBannerProps> = 
 ({
     color,
-    bannerRect
+    bannerRect,
+    handleClick
 }) => {
   const colorIndex: number = color === PieceColors.WHITE ? 0 : 1;
   const {
@@ -21,8 +25,29 @@ const PiecePromotionBanner: React.FC<PiecePromotionBannerProps> =
   } = PieceMap;
 
   const pieceImgArray = [
-    queenImages, rookImages, knightImages, bishopImages
-  ].map(images => images[colorIndex])
+    {
+      piece: "q",
+      color,
+      imgs: queenImages
+    },
+    {
+      piece: "r",
+      color,
+      imgs: rookImages
+    },
+    {
+      piece: "n",
+      color,
+      imgs: knightImages
+    },
+    {
+      piece: "b",
+      color,
+      imgs: bishopImages
+    }
+  ].map(p => ({...p, imgs: p.imgs[colorIndex]}))
+
+  console.log(pieceImgArray)
 
   return (
     <div className="piece_promotion_banner__container" 
@@ -30,10 +55,13 @@ const PiecePromotionBanner: React.FC<PiecePromotionBannerProps> =
     >
             <div className="piece_image__wrapper flex">
                 {
-                    pieceImgArray.map((imgUrl, idx) => {
-                        return <div className="square flex centered" key={idx}>
-                          <img src={imgUrl} className="w-100" />
-                        </div>
+                    pieceImgArray.map((p, idx) => {
+                        return <button 
+                        className="square flex centered" 
+                        key={idx} 
+                        onClick={() => handleClick(p.piece)}>
+                          <img src={p.imgs} className="w-100" />
+                        </button>
                     })
                 }
             </div>

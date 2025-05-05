@@ -98,7 +98,10 @@ export interface IMoveData {
 export interface IPromotionData {
   pieceId: string,
   pieceColor: string;
-  squareCoords: {[key: string]: number};
+  fromCoords: {[key: string]: number};
+  toCoords: {[key: string]: number};
+  fromNotation: string;
+  toNotation: string;
   promotionSelection: string | null;
   bannerRect: {[key: string]: number};
 }
@@ -115,11 +118,14 @@ export type ArenaState = {
   setActiveSquare: (notation: string) => void;
   setMove: (
     board: Square[][],
+    color: string,
     pieceId: string,
     toCoordinates: CoordType,
     fromCoordinates: CoordType,
     fromNotation: string,
-    toNotation: string
+    toNotation: string,
+    isPromotion: boolean,
+    promotionPiece: string | null
   ) => void
   setActivePiece: (
     whiteTurnToMove: boolean,
@@ -132,10 +138,14 @@ export type ArenaState = {
   setPromotionData: (
     pieceId: string,
     pieceColor: string,
-    squareCoords: {[key: string]: number},
+    fromCoords: {[key: string]: number},
+    toCoords: {[key: string]: number},
+    fromNotation: string,
+    toNotation: string,
     promotionSelection: string | null,
-    promotionBannerWidth: number
+    promotionBannerWidth: number,
   ) => void;
+  clearPromotionData: () => void;
   setPerspective: (
     board: Square[][]
   ) => void;

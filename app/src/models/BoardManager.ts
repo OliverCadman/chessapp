@@ -4,10 +4,16 @@ import {
   RANK_LENGTH, 
   FILE_LENGTH, 
   CASTLE_DESTINATION_SQUARES,
-  MOVE_FLAGS
+  MOVE_FLAGS,
+  backrank,
+  PROMOTION_PIECES,
+  coordToFile,
+  coordToRank
 } from "./constants";
 
 import { Chess } from "chess.js";
+import Piece from "./Piece";
+import { PieceColors } from "../constants/PieceColors";
 
 
 class BoardManager {
@@ -57,7 +63,11 @@ class BoardManager {
     fromX: number, 
     fromY: number, 
     toX: number, 
-    toY: number
+    toY: number,
+    isPromotion: boolean,
+    promotionPieceName: string | null,
+    promotionPieceID: string | null,
+    promotionColor: string | null
   ) {
 
     let piece;
@@ -72,15 +82,27 @@ class BoardManager {
           }
         }
       }
-  
+      
+      let setPieceAttempt;
       for (let i = 0; i < FILE_LENGTH; i++) {
         for (let j = 0; j < RANK_LENGTH; j++) {
           const boardCoords = board[i][j].coordinates; 
           if (piece && boardCoords.x === toX && boardCoords.y === toY) {
-            const setPieceAttempt = board[i][j].setPiece(
-              departedSquare || null,
-              piece,
-            );
+            if (isPromotion && promotionColor && promotionPieceID && promotionPieceName) {
+              console.log(departedSquare)
+              setPieceAttempt = board[i][j].setPiece(
+                departedSquare || null,
+                new Piece(promotionColor, promotionPieceID, promotionPieceName),
+                true
+              )
+            } else {
+              setPieceAttempt = board[i][j].setPiece(
+                departedSquare || null,
+                piece,
+                false
+              );
+            }
+
             if (!setPieceAttempt) return board; // Square is occupied by an opponent's own piece.
           }
         }
@@ -143,8 +165,6 @@ class BoardManager {
 
   }
 
-
-
   splitString(string: string, delimiter: string) {
     return string.split(delimiter)
   }
@@ -159,7 +179,7 @@ class BoardManager {
     .find((s) => s.notation === notation);
   }
 
-  computeAttackedEPPiecePosition(san: string) {
+  computeAttackedEPPiecePosition(san: string, pieceColor: string) {
     /*
       En passant can only occur when both opponent's
       pawns are on the 5th rank. 
@@ -174,16 +194,25 @@ class BoardManager {
     const splitNotation = this.splitString(squareThatOpponentHasAttacked, "")
 
     const file = splitNotation[0]
-    const rank = parseInt(splitNotation[1])
+    const rank = parseInt(splitNotation[1]);
+    let tmpRank;
 
-    return `${file}${rank - 1}`
+    console.log(pieceColor, PieceColors.WHITE)
+    if (pieceColor === PieceColors.WHITE) {
+      console.log("piece that en passanted is white")
+      tmpRank = rank - 1
+    } else tmpRank = rank + 1
+
+    return `${file}${tmpRank}`
   }
 
   
-  performEnPassant(board: Square[][], moveSAN: string) {
+  performEnPassant(board: Square[][], moveSAN: string, pieceColor: string) {
 
-    const capturedSquareNotation = this.computeAttackedEPPiecePosition(moveSAN)
+    const capturedSquareNotation = this.computeAttackedEPPiecePosition(moveSAN, pieceColor)
     const capturedSquare =  this.findSquareByNotation(board, capturedSquareNotation);
+
+    console.log(capturedSquareNotation, capturedSquare)
 
     if (!capturedSquare) return
 
@@ -199,13 +228,101 @@ class BoardManager {
     )
   }
 
+  createNewPieceID(board: Square[][], color: string, pieceNotation: string) {
+    const pieceArr = this.findPiecesByColorAndID(board, color, pieceNotation);
+    return `${this.splitString(color, "")[0]}${pieceNotation}${pieceArr.length + 1}`
+  }
+
+  createPromotionSquareArray(
+    pieceId: string,
+    promotionSquareCoords: {[key: string]: number},
+    color: string
+  ) {
+
+    if (!this.isPromotion(promotionSquareCoords.y, pieceId)) return;
+    
+    const {x, y} = promotionSquareCoords; 
+    let tmpX;
+
+    if (color === PieceColors.WHITE) {
+      // White's perspective
+      if (x > 0 && x <= 4) {
+         tmpX = x;
+       } else if (x > 4) {
+         tmpX = 4;
+       } else {
+         tmpX = 0;
+       } 
+    } else {
+      // Black's perspective
+      if (x < 7 && x >= 3) {
+        tmpX = x;
+      } else if (x < 3) {
+        tmpX = 3
+      } else {
+        tmpX = 7
+      }
+    }
+      
+    return PROMOTION_PIECES
+    .map((piece, idx) => {
+      if (color === PieceColors.BLACK) {
+        /**
+         * We want to present our
+         * selection of promotion pieces from left to right.
+         * 
+         * From white's perspective, it is enough to use the add the index
+         * of the map to the x-position of where the promoting pawn landed,
+         * since the x coords from the white perspective move from left to right.
+         * 
+         * From black's perspective, this won't work since if black's promoting
+         * pawn lands on, say, x coord 7 (the far left of the board), the idx would
+         * end up incrementing from there (...8, 9, 10). Of course,
+         * this is undesirable. So, invert the index if black is the player promoting.
+         */
+        idx = -idx
+      }
+
+      return new Square(
+        {
+          x: idx + tmpX,
+          y: y
+        },
+        null,
+        new Piece(
+          color,
+          null,
+          piece.pieceName
+        )
+      )
+    })
+  }
+
+  findPiecesByColorAndID(board: Square[][], color: string, pieceNotation: string) {
+    const pieceArr = [];
+
+    for (let i = 0; i < FILE_LENGTH; i++) {
+      for (let j = 0; j < RANK_LENGTH; j++) {
+        if (board[i][j].pieceOnThisSquare) {
+          const piece = board[i][j].pieceOnThisSquare
+          if (piece?.pieceId && this.splitString(piece.pieceId, "")[1] === pieceNotation && piece.color === color) {
+            pieceArr.push(piece.pieceId)
+          }
+        }
+      }
+    }
+    return pieceArr
+  }
+
   makeMove(
       board: Square[][],
+      color: string,
       pieceId: string,
       toCoordinates: CoordType,
       fromCoordinates: CoordType,
       fromNotation: string,
-      toNotation: string
+      toNotation: string,
+      promotionSelection: string | null
     ) {
   
       if (!board) return;
@@ -215,7 +332,7 @@ class BoardManager {
     
       try {
 
-        if (this.isPromotion(toY, pieceId)) {
+        if (promotionSelection) {
           /**
            * ChessJS does not accept promotion
            * moves unless the promotion piece is added 
@@ -224,12 +341,21 @@ class BoardManager {
            * Need to add alternative to 'submitMove' method
            * to allow for promoting pawns.
            * 
-           * TODO: Replace hardcoded "q" string with user's choice from client side.
            */
-          const move = this.submitPromotion(fromNotation, toNotation, "q")
+
+  
+          let cleansedPromotionPiece = promotionSelection === "n" ? "k" : promotionSelection;
+
+          const move = this.submitPromotion(fromNotation, toNotation, promotionSelection);
+          const promotionColor = pieceId.split("")[0] === "w" ? "white" : "black"
+          const newPieceID = this.createNewPieceID(board, promotionColor, promotionSelection)
+          const backrankCleansed = backrank.filter(x => x !== "king")
+          const newPiece = backrankCleansed[
+            backrankCleansed.map(x => x[0]).indexOf(cleansedPromotionPiece)
+          ]
 
           return {
-            board: this.updateBoard(board, fromX, fromY, toX, toY),
+            board: this.updateBoard(board, fromX, fromY, toX, toY, true, newPiece, newPieceID, promotionColor),
             moveData: {
               from: move.from,
               to: move.to,
@@ -248,7 +374,7 @@ class BoardManager {
         ) {
           const newBoard = this.performCastle(board, move.to)
           return {
-            board: this.updateBoard(newBoard, fromX, fromY, toX, toY),
+            board: this.updateBoard(newBoard, fromX, fromY, toX, toY, false, null, null, null),
             moveData: {
             from: move.from,
             to: move.to,
@@ -260,12 +386,12 @@ class BoardManager {
         }
 
         if (move.flags === MOVE_FLAGS.EN_PASSANT) {
-          this.performEnPassant(board, move.san);
+          this.performEnPassant(board, move.san, color);
         }
 
 
         return {
-          board: this.updateBoard(board, fromX, fromY, toX, toY),
+          board: this.updateBoard(board, fromX, fromY, toX, toY, false, null, null, null),
           moveData: {
             from: move.from,
             to: move.to,

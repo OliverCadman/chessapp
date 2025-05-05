@@ -14,6 +14,7 @@ interface BoardProps {
   moveData: IMoveData | null;
   promotionData: IPromotionData | null;
   onRefReady: React.Dispatch<SetStateAction<HTMLDivElement | undefined>>
+  handlePiecePromoClick: (piece: string) => void;
 }
 
 const Board: React.FC<BoardProps> = ({
@@ -22,7 +23,8 @@ const Board: React.FC<BoardProps> = ({
   whiteTurnToMove,
   moveData,
   promotionData,
-  onRefReady
+  onRefReady,
+  handlePiecePromoClick
 }) => {
 
   const boardRef = useRef<HTMLDivElement>(null);
@@ -42,7 +44,7 @@ const Board: React.FC<BoardProps> = ({
           className={`square__container`}
           ref={boardRef}
         >
-          {promotionData && <PiecePromotionBanner color="white" bannerRect={promotionData.bannerRect} />}
+          {promotionData && <PiecePromotionBanner color={promotionData.pieceColor} bannerRect={promotionData.bannerRect} handleClick={handlePiecePromoClick}/>}
           {board.map((row, outerIndex) => {
             return row.map((col, innerIndex) => {
               const isPieceOnThisSquare = Boolean(col.pieceOnThisSquare);

@@ -1,13 +1,16 @@
 import Square from "./Square";
 import Piece from "./Piece";
-import { FILE_LENGTH, RANK_LENGTH } from "./constants";
-
-import { Chess } from "chess.js";
+import {
+  backrank,
+  whitePieceIds,
+  whitePawnIds,
+  blackPieceIds,
+  blackPawnIds
+} from "./constants";
 
 export class Board {
   board: Square[][]
   playerIsWhite: boolean;
-  private rankToCoord: {[key: string]: number}
 
   constructor(playerIsWhite: boolean) {
     this.board = this.init();
@@ -38,60 +41,6 @@ export class Board {
       ? ["1", "2", "3", "4", "5", "6", "7", "8"]
       : ["8", "7", "6", "5", "4", "3", "2", "1"];
 
-    const backrank = [
-      "rook",
-      "knight",
-      "bishop",
-      "king",
-      "queen",
-      "bishop",
-      "knight",
-      "rook",
-    ];
-
-    const whitePieceIds = [
-      "wr1",
-      "wn1",
-      "wb1",
-      "wq1",
-      "wk1",
-      "wb2",
-      "wn2",
-      "wr2",
-    ];
-
-    const whitePawnIds = [
-      "wp1",
-      "wp2",
-      "wp3",
-      "wp4",
-      "wp5",
-      "wp6",
-      "wp7",
-      "wp8",
-    ];
-
-    const blackPieceIds = [
-      "br1",
-      "bn1",
-      "bb1",
-      "bq1",
-      "bk1",
-      "bb2",
-      "bn2",
-      "br2",
-    ];
-
-    const blackPawnIds = [
-      "bp1",
-      "bp2",
-      "bp3",
-      "bp4",
-      "bp5",
-      "bp6",
-      "bp7",
-      "bp8",
-    ];
 
     const rankToCoord: {[key: number]: number} = {
             7: 0,
@@ -129,6 +78,7 @@ export class Board {
                 : this.reverseArray(blackPieceIds)[j],
               backrank[j],
             ),
+            false
           );
 
           board[i + 1][this.playerIsWhite ? j : 7 - j].setPiece(
@@ -140,6 +90,7 @@ export class Board {
                 : this.reverseArray(blackPawnIds)[j],
               "pawn",
             ),
+            false
           );
         } else if (i == RANKS.length - 2) {
           board[i][this.playerIsWhite ? j : 7 - j].setPiece(
@@ -151,6 +102,7 @@ export class Board {
                 : this.reverseArray(whitePawnIds)[j],
               "pawn",
             ),
+            false
           );
 
           board[i + 1][this.playerIsWhite ? j : 7 - j].setPiece(
@@ -162,6 +114,7 @@ export class Board {
                 : this.reverseArray(whitePieceIds)[j],
               backrank[j],
             ),
+            false
           );
         }
       }

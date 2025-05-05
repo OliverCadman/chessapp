@@ -11,7 +11,7 @@ import {
   TouchSensor,
   closestCenter
 } from "@dnd-kit/core";
-import type { DragStartEvent, DragEndEvent, DragOverEvent } from "@dnd-kit/core";
+import type { DragEndEvent, DragOverEvent } from "@dnd-kit/core";
 import {snapCenterToCursor} from "@dnd-kit/modifiers";
 import useArenaState from "../../store/arena";
 import { PieceColors } from "../../constants/PieceColors";
@@ -27,6 +27,7 @@ const Arena: React.FC = () => {
   const setPerspective = useArenaState((state) => state.setPerspective);
   const promotionData = useArenaState((state) => state.promotionData);
   const setPromotionData = useArenaState((state) => state.setPromotionData);
+  const clearPromotionData = useArenaState((state) => state.clearPromotionData);
   const moveData = useArenaState((state) => state.moveData);
   const setActiveSquare = useArenaState((state) => state.setActiveSquare);
 
@@ -43,6 +44,34 @@ const Arena: React.FC = () => {
 
   }, [childRef]);
 
+  const handlePiecePromoClick = (piece: string) => {
+ 
+    if (!promotionData) return;
+
+    const {
+      pieceId, 
+      pieceColor,
+      fromCoords, 
+      toCoords, 
+      fromNotation, 
+      toNotation
+    } = promotionData; 
+
+    setMove(
+      board,
+      pieceId,
+      pieceColor,
+      toCoords,
+      fromCoords,
+      fromNotation,
+      toNotation,
+      true,
+      piece
+    )
+
+    clearPromotionData();
+  }
+
   const handleDragEnd = (event: DragEndEvent) => {
     const {
       fromCoordinates,
@@ -54,19 +83,47 @@ const Arena: React.FC = () => {
     const {toCoordinates, toNotation} = event.over?.data.current as SquareData;
 
     const rank = parseInt(toNotation.split("")[1])
+    const pieceNotation = pieceId.split("")[1]
+
     if (
-      (pieceColor === PieceColors.WHITE && rank === 8) || 
-      (pieceColor === PieceColors.BLACK && rank === 1)
+      pieceNotation === "p" &&
+      (
+        (pieceColor === PieceColors.WHITE && rank === 8) || 
+        (pieceColor === PieceColors.BLACK && rank === 1)
+      )
     ) {
-      setPromotionData(pieceId, pieceColor, toCoordinates, null, promotionBannerWidth);
+      console.log(
+        fromCoordinates,
+        toCoordinates,
+        fromNotation,
+        toNotation,
+        pieceId,
+        pieceColor
+      )
+      setPromotionData(
+        pieceId, 
+        pieceColor, 
+        fromCoordinates,
+        toCoordinates,
+        fromNotation,
+        toNotation,
+        null, 
+        promotionBannerWidth);
+
+
+
+
     } else {
         setMove(
           board,
           pieceId,
+          pieceColor,
           toCoordinates,
           fromCoordinates,
           fromNotation,
-          toNotation
+          toNotation,
+          false,
+          null
         )
     }
   }
@@ -105,7 +162,8 @@ const Arena: React.FC = () => {
           board={board}
           whitePerspective={whitePerspective}
           whiteTurnToMove={whiteTurnToMove}
-          moveData={moveData}          
+          moveData={moveData}   
+          handlePiecePromoClick={handlePiecePromoClick}       
           />
       </DndContext>
       <button

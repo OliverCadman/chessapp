@@ -27,20 +27,40 @@ const useArenaState = create<ArenaState>((set) => ({
   setMove: (
     board: Square[][],
     pieceId: string,
+    color: string,
     toCoordinates: CoordType,
     fromCoordinates: CoordType,
     fromNotation: string,
     toNotation: string,
+    isPromotion: boolean,
+    promotionPiece: string | null
 
   )  => set((state) => {
-      const newBoard = boardManager.makeMove(
-        board,
-        pieceId,
-        toCoordinates,
-        fromCoordinates,
-        fromNotation,
-        toNotation
-      )
+      let newBoard;
+
+      if (!isPromotion) {
+          newBoard = boardManager.makeMove(
+          board,
+          color,
+          pieceId,
+          toCoordinates,
+          fromCoordinates,
+          fromNotation,
+          toNotation,
+          null
+        )
+      } else {
+        newBoard = boardManager.makeMove(
+          board,
+          color,
+          pieceId,
+          toCoordinates,
+          fromCoordinates,
+          fromNotation,
+          toNotation,
+          promotionPiece
+        )
+      }
 
       return {
         ...state,
@@ -51,16 +71,22 @@ const useArenaState = create<ArenaState>((set) => ({
         activePiece: null
       }
   }),
+  clearPromotionData: () => set((state) => ({...state, promotionData: null})),
   setPromotionData: (
     pieceId: string,
     pieceColor: string,
-    squareCoords: {[key: string]: number},
+    fromCoords: {[key: string]: number},
+    toCoords: {[key: string]: number},
+    fromNotation: string,
+    toNotation: string,
     promotionSelection: string | null,
     promotionBannerWidth: number
   ) => set((state) => {
 
-    const x = squareCoords.x;
+    const x = toCoords.x;
     let left;
+
+    console.log(boardManager.createPromotionSquareArray(pieceId, toCoords, pieceColor))
 
     if (x > 0 && x <= 4) {
       left = x * promotionBannerWidth / 4;
@@ -74,7 +100,10 @@ const useArenaState = create<ArenaState>((set) => ({
     promotionData: {
       pieceId,
       pieceColor,
-      squareCoords,
+      fromCoords,
+      toCoords,
+      fromNotation,
+      toNotation,
       promotionSelection,
       bannerRect: {
         width: promotionBannerWidth,
